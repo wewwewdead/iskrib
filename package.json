@@ -1,0 +1,17 @@
+{
+  "name": "project_iskryb",
+  "version": "1.0.0",
+  "description": "social media app",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "loren",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "path": "^0.12.7"
+  }
+}

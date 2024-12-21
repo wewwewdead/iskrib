@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iskryb</title>
+    <link rel="stylesheet" href="/styles/layout.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <button class="navbutton">☰</button>
+            <div class="logo">
+                <h2><a href="">Iskryb</a></h2>
+            </div>
+            <div class="nav-icons">
+                <li><a href='/about'>About</a></li>
+                <li><a href='/landingpage'>Home</a></li>
+            </div>
+        </nav>
+        <div class="contentcontainer">
+            <div class="content">
+                <div class="box item">
+                    <h1>Become a
+                    <span class="iskribbler">Iskribbler <span class="pen">𓂃🖊</span></span>
+                    </h1>
+                    <p>Write. Share. Inspire</p>
+                     <ul>
+                        <li><span>✅</span>Empowering users to express their thoughts freely.</li>
+                        <li><span>✅</span>Building a supportive space for like-minded individuals.</li>
+                        <li><span>✅</span>Encouraging personal growth through writing, reading and sharing.</li>
+                        <li><span>✅</span>Promoting honest and meaningful contents.</li>     
+                    </ul>
+                </div>
+                <%-include("./partials/footer.ejs")%>
+            </div>
+            
+            <div class="loginpage item">
+                <div class="loginbox">
+                    <div ><h1 class="signup">Sign Up</h1></div>
+                    <div><h4 class="haveaccount">Already have an account?  <a href=""><span class="login">Log in</span></a></h4></div>
+                    <div class="form">
+                        <form action="/signup" method="post">
+                            <input type="text" class="userinput" id="email" name="email" required placeholder="email">
+                            <input type="text" class="userinput" id="password" name="password" required placeholder="password">
+                            <input type="text" class="userinput" id="fname" name="fname" required placeholder="firstname">
+                            <input type="text" class="userinput" id="lname" name="lname" required placeholder="lastname">
+                        </form>
+                        <div class="button">
+                            <button class="signupButton">Sign Up</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+</body>
+</html>
