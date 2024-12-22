@@ -37,15 +37,17 @@
             
             <div class="loginpage item">
                 <div class="loginbox">
-                    <div ><h1 class="signup">Log In</h1></div>
-                    <div><h4 class="haveaccount">Don't have an account? <a href="/landingpage"><span class="login">Sign up</span></a></h4></div>
+                    <div ><h1 class="signup">Sign Up</h1></div>
+                    <div><h4 class="haveaccount">Already have an account?  <a href="/login"><span class="login" >Log in</span></a></h4></div>
                     <div class="form">
-                        <form action="/login" method="post">
+                        <form action="/signup" method="post">
                             <input type="text" class="userinput" id="email" name="email" required placeholder="email">
                             <input type="text" class="userinput" id="password" name="password" required placeholder="password">
+                            <input type="text" class="userinput" id="fname" name="fname" required placeholder="firstname">
+                            <input type="text" class="userinput" id="lname" name="lname" required placeholder="lastname">
                         </form>
                         <div class="button">
-                            <button class="signupButton" type="submit">Log in</button>
+                            <button class="signupButton">Sign Up</button>
                         </div>
                         
                     </div>
