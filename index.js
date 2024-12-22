@@ -17,6 +17,10 @@ app.get('/landingpage', (req, res) => {
     res.render('landingpage');
 })
 
+app.get('/login', (req, res) => {
+    res.render('login');
+})
+
 app.listen(port, () => {
     console.log(`server running on port ${port}`);
 })
