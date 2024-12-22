@@ -186,6 +186,16 @@ body {
 .lorenfooter {
     text-decoration: underline;
 }
+.showpassword{
+    
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+#hidepassword {
+    padding: 1px;
+    font-size: 0.6rem;
+}
 
 @media (max-width: 768px) {
     .box ul li{
