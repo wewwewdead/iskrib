@@ -17,9 +17,22 @@ app.use(express.static(path.join(process.cwd(), 'public')));
 app.use(express.urlencoded({extended: true}));
 
 const secret_key = '2sd5s8d00s522f22sd0';
-let users = [];
+const usersFilePath = 'users.json';
 
+const readUserData = () => {
+    if(!fs.existsSync(usersFilePath)) { //it check's the json file if it exist else it will return [];
+        return [];
+    }
+    const data = fs.readFileSync(usersFilePath, 'utf8'); //read the userfilpath that contain users data
+    return data ? JSON.parse(data) : [];  //if JSON data was parsed succesfully it will return it else
+    // it will return a blank array []
+}
 
+//function to write users data
+const writeUsersData = (users) => {
+    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2)); //JSON.stringify is to make 
+    // javascript object into a json string
+}
 
 app.get('/landingpage', (req, res) => {
     res.render('landingpage');
@@ -33,55 +46,22 @@ app.get('/login', (req, res) => {
 
 
 //creating a users account using signup post method
-app.post('/signup', async (req, res) => {
+//route to store users email and password
+app.post('/signup', (req, res) => {
     
     const {email, password} = req.body; //get the users input of email and password
+    const hashedPassword = bcrypt.hashSync(password, 5);
+    let users = readUserData();
+    // console.log(users);
 
-    //hash the users password
-    const hashedPassword = await bcrypt.hash(password, 5);
-    console.log(hashedPassword);
-    
-    const newUser = {email, password: hashedPassword};
+    //check if the email is already used
+    if(users.find((user) => user.email === email)) {
+        return res.status(400).send('email is already registered');
+    }
+    users.push({email, password: hashedPassword});
 
-    
-    users.push(newUser);
-    const newEmail = (users[0].email);
-    console.log(newEmail);
-    // users.push(newUser);
-
-
-    // let existingUsers = [];
-    // fs.readFile('users.json', 'utf8', (err, data) => {
-    //     existingUsers.push(data);
-    // })
-
-    fs.readFile('users.json', 'utf8', (err, data) => {
-        if(err) throw err;
-        let existingUsers = [];
-        existingUsers = JSON.parse(data);
-        users.push(existingUsers);
-        console.log(existingUsers);
-        
-        //check if user email already exist
-        existingUsers.forEach(existingemail => {
-            const userExist = existingemail === email;
-            if(userExist) {
-                return res.status(400).json({ message: "User already exists" });
-            } 
-        });
-        
-        const jsonData = JSON.stringify(users, null, 2);
-        fs.writeFile('users.json', jsonData, (err) => {
-            if(err) {
-                console.log(err);
-            } else {
-                console.log('saved');
-            }
-        });
-        
-        return res.status(201).json({ message: "User created successfully" });
-    });
-        
+    writeUsersData(users);
+    res.status(201).send('user registered succesfully');      
 })
 
     
