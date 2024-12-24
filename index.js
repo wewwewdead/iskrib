@@ -47,10 +47,10 @@ app.get('/login', (req, res) => {
 
 //creating a users account using signup post method
 //route to store users email and password
-app.post('/signup', (req, res) => {
+app.post('/signup', async (req, res) => {
     
     const {email, password} = req.body; //get the users input of email and password
-    const hashedPassword = bcrypt.hashSync(password, 5);
+    const hashedPassword = await bcrypt.hash(password, 5);
     let users = readUserData();
     // console.log(users);
 
