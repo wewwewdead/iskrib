@@ -7,17 +7,30 @@
     <link rel="stylesheet" href="/styles/layout.css">
 </head>
 <body>
+
+    <nav class="navbar">
+        <button class="navbutton">☰</button>
+        <div class="logo">
+            <h2><a href="/landingpage">Iskryb</a></h2>
+        </div>
+        <div class="nav-icons">
+            <li><a href='/about'>About</a></li>
+            <li><a href='/landingpage'>Home</a></li>
+        </div>
+    </nav>
+
     <div class="container">
-        <nav class="navbar">
-            <button class="navbutton">☰</button>
-            <div class="logo">
-                <h2><a href="">Iskryb</a></h2>
+        
+        <div class="sidebar">
+            <div class="sidebar-icons">
+                <div class="logoInSidebar"> 
+                    <h2><a href="/landingpage">Iskryb</a></h2>
+                </div>
+                <li><a class="sidebar_anchor" href='/about'>About</a></li>
+                <li><a class="sidebar_anchor" href='/landingpage'>Home</a></li>
             </div>
-            <div class="nav-icons">
-                <li><a href='/about'>About</a></li>
-                <li><a href='/landingpage'>Home</a></li>
-            </div>
-        </nav>
+        </div>
+
         <div class="contentcontainer">
             <div class="content">
                 <div class="box item">
@@ -38,13 +51,32 @@
             <div class="loginpage item">
                 <div class="loginbox">
                     <div ><h1 class="signup">Sign Up</h1></div>
-                    <div><h4 class="haveaccount">Already have an account?  <a href="/login"><span class="login" >Log in</span></a></h4></div>
+                    <div><h4 class="haveaccount">Already have an account?  <a href="/login"><span class="login">Log in</span></a></h4></div>
                     <div class="form">
                         <form action="/signup" method="POST">
                             <input type="text" class="userinput" id="email" name="email" required placeholder="email">
-                            <input type="text" class="userinput" id="password" name="password" required placeholder="password">
+
+                            <!-- show a error message to the client -->
+                            <% if(locals.errorMessage) {%>
+                                <div class="errorMessage"><p><%= errorMessage %></p></div>
+                                <% } %>
+
+                            <input type="password" class="userinput" id="password" name="password" required placeholder="password">
+                            <div class="showpassword">
+                                <input type="checkbox" id="myCheckbox">
+                                <label for="showpassword" id="hidepassword">showpassword</label>
+                            </div>
                             <input type="text" class="userinput" id="firstname" name="firstname" required placeholder="firstname">
                             <input type="text" class="userinput" id="lastname" name="lastname" required placeholder="lastname">
+
+                            <div class="demographic">
+                                <select class="select" name="gender" required>
+                                    <option value="" data-display="select" aria-placeholder="Gender">Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                            
                             <input class="signupButton" type="submit" value="Sign up">
                         </form>
                         <!-- <div class="button">
@@ -57,7 +89,7 @@
         </div>
         
     </div>
-    
 </body>
 <script src="/javascript.js"></script>
 </html>
+            

@@ -7,15 +7,35 @@ function removeAsterisk(inputField) {
 
 const password = document.getElementById('password');
 const myCheckbox = document.getElementById('myCheckbox');
+const hidepassword = document.getElementById('hidepassword');
 
-password.addEventListener('focus', () => {
-    asteriskPassword(password);
+hidepassword.addEventListener('click', (e) => {
+    if(hidepassword.contains(e.target)) {
+        myCheckbox.checked = !myCheckbox.checked;
+        if(myCheckbox.checked) {
+            removeAsterisk(password); 
+        } else {
+            asteriskPassword(password);
+        }
+    }
 })
 myCheckbox.addEventListener('change', () => {
-    if(password.type === 'password') {
+    if(myCheckbox.checked) {
         removeAsterisk(password); 
     } else {
         asteriskPassword(password);
+    }
+})
+
+const sidebar = document.querySelector('.sidebar');
+const navbutton = document.querySelector('.navbutton');
+
+navbutton.addEventListener('click', () => {
+    sidebar.classList.toggle('activate_sidebar');
+})
+document.addEventListener('click', e => {
+    if(!sidebar.contains(e.target) && !navbutton.contains(e.target)) {
+        sidebar.classList.remove('activate_sidebar');
     }
 })
 // password.addEventListener('focus', ()=> {
