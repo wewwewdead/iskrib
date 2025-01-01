@@ -1,17 +1,18 @@
 import express from "express";
 import path from "path";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import fs from "fs";
+import bcrypt from 'bcrypt';
 import pg from "pg";
 import session from 'express-session';
 import passport from "passport";
 import {Strategy} from 'passport-local';
+import flash from 'connect-flash';
+import env from "dotenv";
 
 
 
 const app = express();
 const port = 3000;
+env.config();
 
 app.use(express.json());
 app.set('view engine', 'ejs');
@@ -20,41 +21,26 @@ app.use(express.urlencoded({extended: true}));
 app.set('views', 'views');
 
 app.use(session({
-    secret: 'SECRET',
+    secret: process.env.COOKIES_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: {maxAge: 1000 * 60 * 60 * 10}
+    cookie: {maxAge: 1000 * 60 * 60 * 10},
+    secure: process.env.NODE_ENV === 'production', // Ensure secure cookies in production
+    httpOnly: true // Protect cookie from being accessed via JavaScript
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-const secret_key = '2sd5s8d00s522f22sd0';
-const usersFilePath = 'users.json';
+app.use(flash());
 
 const db = new pg.Client({
     user: 'postgres',
     database:'iskrib',
     host: 'localhost',
-    password: 'magnificent2',
+    password: process.env.DB_PASSWORD,
     port: 5432
 })
 db.connect();
-
-const readUserData = () => {
-    if(!fs.existsSync(usersFilePath)) { //it check's the json file if it exist else it will return [];
-        return [];
-    }
-    const data = fs.readFileSync(usersFilePath, 'utf8'); //read the userfilpath that contain users data
-    return data ? JSON.parse(data) : [];  //if JSON data was parsed succesfully it will return it else
-    // it will return a blank array []
-}
-
-//function to write users data
-const writeUsersData = (users) => {
-    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2)); //JSON.stringify is to make 
-    // javascript object into a json string
-}
 
 app.get('/', (req, res) => {
     if(req.isAuthenticated()) {
@@ -81,7 +67,7 @@ app.get('/login', (req, res) => {
     if(req.isAuthenticated()) {
         res.render('homepage');
     } else {
-        res.render('login');
+        res.render('login', {errorMessage: req.flash('error')});
     }
 })
 app.get('/homepage', (req, res) => {
@@ -121,7 +107,9 @@ app.post('/signup', async (req, res) => {
 app.post('/log', passport.authenticate('local', {
     successRedirect: '/homepage',
     failureRedirect: '/login',
-}))
+    failureFlash: 'Invalid email or password', // sets a error message to the login.ejs view and fetch the data to the locals.errorMessage
+}));
+
 app.post('/logOut', (req, res) => {
     req.logout(err => {
         if(err) {
@@ -154,10 +142,20 @@ passport.use(new Strategy(async function verify(username, password, cb) {
 }));
 
 passport.serializeUser((user, cb) => {
-    cb(null, user);
+    cb(null, user.id);
 })
-passport.deserializeUser((user, cb) => {
-    cb(null, user);
+passport.deserializeUser( async(id, cb) => {
+    try {
+        const response = await db.query('SELECT * FROM users WHERE id = $1', [id]);
+        if(response.rows.length > 0) {
+            return cb(null, response.rows[0]); //refetch the user data from database
+        } else {
+            return cb(new Error('User not found'), null);
+        }
+    } catch (error) {
+        console.error(error.message);
+        return cb(error, null); //return a error message without users data because it's null in a callback parameter
+    }
 })
 
 app.listen(port, () => {

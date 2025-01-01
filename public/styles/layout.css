@@ -24,6 +24,9 @@ body {
 .navbutton{
     display: none;
 }
+.logOutIcon {
+    display: none;
+}
 .sidebar {
     display: none;
     height: 100%;
@@ -34,6 +37,9 @@ body {
 }
 
 .sidebar-icons {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     padding: 1rem;
 }
 .sidebar-icons li{
@@ -298,7 +304,8 @@ body {
         height: 25px;
         padding: 2px;
         margin: 0;
-        justify-content: flex-start;
+        justify-content: space-between;
+        align-items: center;
 
     }
     .navbutton{
@@ -385,5 +392,18 @@ body {
     .loginpage {
         width: 100%;
         padding: 1rem 0;
+    }
+    .logout-button{
+        border-radius: 15px;
+        border: none;
+        background-color: #243642;
+        color: #E2F1E7;
+        cursor: pointer;
+        padding: .3rem;
+        font-size: 0.4rem;
+    }
+    .log-out {
+        display: flex;
+        align-items: center;
     }
 }

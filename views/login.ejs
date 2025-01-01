@@ -62,9 +62,11 @@
                                 <label for="showpassword" id="hidepassword">showpassword</label>       
                             </div>
 
-                            <% if(locals.errorMessage) {%>
-                                <div class="errorMessage"><p><%= errorMessage %></p></div>
-                                <% } %>
+                            <% if(errorMessage && errorMessage.length > 0) {%>
+                                <div class="errorMessage">
+                                    <p><%= errorMessage %></p>
+                                </div>
+                            <% } %>
 
                             <div class="button">
                                 <input class="signupButton" type="submit" value="Log in"></input>

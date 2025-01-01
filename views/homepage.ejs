@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iskryb</title>
-    <link rel="stylesheet" href="/styles/layout.css">
+    <link rel="stylesheet" href="/styles/newsfeed.css">
 </head>
 <body>
 
@@ -13,6 +13,13 @@
         <div class="logo">
             <h2><a href="/landingpage">Iskryb</a></h2>
         </div>
+
+        <div class="logOutIcon">
+            <form class="log-out" action="/logOut" method="post">
+                <input class="logout-button" type="submit" value="Log out">
+            </form>
+        </div>
+        
         <div class="nav-icons">
             <form action="/logOut" method="post">
                 <input class="logout-button" type="submit" value="Log out">
@@ -21,14 +28,18 @@
     </nav>
 
     <div class="container">
+
+        <div class="sidebar-desktop">
+            <div class="sidebar-icons">
+                <p>HELLO</p>
+            </div>
+        </div>
         
         <div class="sidebar">
             <div class="sidebar-icons">
                 <div class="logoInSidebar"> 
                     <h2><a href="/landingpage">Iskryb</a></h2>
                 </div>
-                <li><a class="sidebar_anchor" href='/about'>About</a></li>
-                <li><a class="sidebar_anchor" href='/landingpage'>Home</a></li>
             </div>
         </div>
 
@@ -36,11 +47,10 @@
            <div class="left">
             <h1>Hello, welcome to iskrib!!</h1>
            </div>
-           <div class="right"></div>
-        </div>
         
     </div>
+
 </body>
-<script src="/javascript.js"></script>
+<script src="/newsfeed.js"></script>
 </html>
             
