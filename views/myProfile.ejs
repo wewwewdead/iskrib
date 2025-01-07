@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iskryb</title>
+    <link rel="stylesheet" href="/styles/myProfile.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <button class="navbutton">☰</button>
+        <div class="logo">
+            <h2><a href="/landingpage">Iskryb</a></h2>
+        </div>
+
+        <div class="logOutIcon">
+            <form class="log-out" action="/logOut" method="post">
+                <input class="logout-button" type="submit" value="Log out">
+            </form>
+        </div>
+        
+        <div class="nav-icons">
+            <form action="/logOut" method="post">
+                <input class="logout-button" type="submit" value="Log out">
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="sidebar-desktop">
+            <div class="sidebar-icons">
+                <h4><a href="/myProfile"><%= locals.user.firstname%> <%= locals.user.lastname %></a></h4>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="sidebar-icons">
+                <div class="logoInSidebar"> 
+                    <h2><a href="/landingpage">Iskryb</a></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-container">
+           <div class="profile-details">
+            <h2><%= locals.user.firstname %> <%= locals.user.lastname %></h2>
+            <p> <%= locals.user.email %></p>
+            <br>
+            <div class="selection">
+                <a href="/myProfile" class="profileSelection" style="text-decoration: underline;"><p>Home</p></a>
+                <a href="/myProfile/Bio"class="profileSelection"><p>Bio</p></a>
+            </div>
+            <hr>
+            <br>
+            <h5>Posts</h5>
+            <div class="profile_post">
+                <% if(posts.length > 0) {%>
+                    <% posts.forEach(post => {%>
+                        <a class="profile_link" href="/myProfile">
+                            <p><%= user.firstname%><%=user.lastname %></p>
+                        </a>
+                        <h2><%= post.title %></h2>
+                        <p><%= post.content %></p>
+                        <p><small><%= post.created_at %></small></p>
+                    <%}); %>
+                    <% } else {%>
+                        <p>No post yet</p>
+                    <%}%>
+            </div>
+
+            <div class="pagination">
+                <% if(currentPage > 1) {%>
+                    <a href="/myProfile?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+                    <%  }%>
+                
+                <span>Page <%= currentPage %> of <%= totalPages %></span>
+        
+                <% if(currentPage < totalPages ) {%>
+                    <a href="/myProfile?page=<%= currentPage + 1 %>">Next &raquo;</a>
+                    <% } %>
+            </div>
+        </div>
+
+        <div class="edit-profile">
+            <a href="/edit-profile" >Edit Profile</a>
+        </div>
+        
+        
+    </div>
+   
+
+</body>
+<script src="/newsfeed.js"></script>
+</html>
+            

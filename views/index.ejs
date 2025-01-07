@@ -8,20 +8,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
-
     <nav class="navbar">
         <button class="navbutton">☰</button>
         <div class="logo">
             <h2><a href="/landingpage">Iskryb</a></h2>
         </div>
         <div class="nav-icons">
-            <li><a href="/about">About</a></li>
-            <li><a href="/landingpage">Home</a></li>
+            <li><a href='/about'>About</a></li>
+            <li><a href='/landingpage'>Home</a></li>
         </div>
     </nav>
-
     <div class="container">
-        
         <div class="sidebar">
             <div class="sidebar-icons">
                 <div class="logoInSidebar"> 
@@ -31,43 +28,40 @@
                 <li><a class="sidebar_anchor" href='/landingpage'>Home</a></li>
             </div>
         </div>
-         
         <div class="contentcontainer">
             <div class="content">
                 <div class="box item">
-                    <h1>About
-                        <span class="iskribbler">Iskrib<span class="pen">𓂃🖊</span></span>
-                        </h1>
-                        <ul>
-                            <li><h3>Who is Iskrib as a brand?</h3>
-                                <span style="font-size: 1.2rem;">ISKRIB</span> is a minimalist, community-driven platform for writers, poets, storytellers, and readers.
-                                It exists to inspire creativity, encourage meaningful expression, and build connections among like-minded individuals.
-                            </li>
-                            <br>
-                            <p>Write, share, and inspire -</p>
-                            <p>let your story inspire people</p>
-                        </ul>
+                    <h1>Become a
+                    <span class="iskribbler">Iskribbler <span class="pen">𓂃🖊</span></span>
+                    </h1>
+                    <p>Write. Share. Inspire</p>
+                     <ul>
+                        <li><span>✅</span>Empowering users to express their thoughts freely.</li>
+                        <li><span>✅</span>Building a supportive space for like-minded individuals.</li>
+                        <li><span>✅</span>Encouraging personal growth through writing, reading and sharing.</li>
+                        <li><span>✅</span>Promoting honest and meaningful contents.</li>     
+                    </ul>
                 </div>
-                <%-include("./partials/footer.ejs")%>
+                <div class="footercontent">
+                    <div class="left">
+                        <h1 class="footeriskrib">Iskrib</h1>
+                        <div class="footericons">
+                            <a href="https://www.instagram.com/johnmathewloren/" target="_blank"><img src="/images/instagram.png" alt="" srcset=""></a>
+                            <a href="https://www.facebook.com/johnmathew.loren" target="_blank"><img src="/images/facebook.png"></a>
+                            <a href="https://x.com/LorenJohnmathew" target="_blank"><img src="/images/twitter.png" alt="" srcset=""></a>
+                        </div>
+                        <p class="footermessage"><span class="footerspan">Iskrib's</span> vision is to create a platform
+                        where writers, poets, and storytellers can connect, share, collaborate, and inspire each other.</p>
+                        <br>
+                        <p class="footermessage"><span class="lorenfooter">Copyright 2024</span> Made with <span>🤍</span> <span class="lorenfooter">by Loren</span></p>
+                    </div>
+                </div>
             </div>
+            
             <div class="loginpage item">
                 <div class="loginbox">
                     <div ><h1 class="signup">Sign Up</h1></div>
                     <div><h4 class="haveaccount">Already have an account?  <a href="/login"><span class="login">Log in</span></a></h4></div>
-
-                    <div class="oauthCard">
-                        <div class="googleSignIn">  
-                            <a class="googleButton" href="auth/google" role="button">
-                                <i class="fab fa-google"></i>
-                                Sign In with Google
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="Or"> 
-                        <p>OR</p>
-                    </div>
-
                     <div class="form">
                         <form action="/signup" method="POST">
                             <input type="text" class="userinput" id="email" name="email" required placeholder="email">
@@ -76,11 +70,7 @@
                             <% if(locals.errorMessage) {%>
                                 <div class="errorMessage"><p><%= errorMessage %></p></div>
                                 <% } %>
-                            
-                                <% if(locals.message) {%>
-                                    <div class="errorMessage"><% message %></div>
-                                    <% } %>
-                    
+
                             <input type="password" class="userinput" id="password" name="password" required placeholder="password">
                             <div class="showpassword">
                                 <div class="showpass">
@@ -97,8 +87,8 @@
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
                                 </select>
-                            </div>
 
+                            </div>
                             <input class="signupButton" type="submit" value="Sign up">
                         </form>
                         <!-- <div class="button">

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iskryb</title>
+    <link rel="stylesheet" href="/styles/myProfile.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <button class="navbutton">☰</button>
+        <div class="logo">
+            <h2><a href="/landingpage">Iskryb</a></h2>
+        </div>
+
+        <div class="logOutIcon">
+            <form class="log-out" action="/logOut" method="post">
+                <input class="logout-button" type="submit" value="Log out">
+            </form>
+        </div>
+        
+        <div class="nav-icons">
+            <form action="/logOut" method="post">
+                <input class="logout-button" type="submit" value="Log out">
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="sidebar-desktop">
+            <div class="sidebar-icons">
+                <h4><a href="/myProfile"><%= locals.user.firstname%> <%= locals.user.lastname %></a></h4>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="sidebar-icons">
+                <div class="logoInSidebar"> 
+                    <h2><a href="/landingpage">Iskryb</a></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-container">
+           <div class="profile-details">
+            <h2><%= locals.user.firstname %> <%= locals.user.lastname %></h2>
+            <p> <%= locals.user.email %></p>
+            <br>
+            <div class="selection">
+                <a href="/myProfile" class="profileSelection"><p>Home</p></a>
+                <a href="/myProfile/Bio"class="profileSelection" style="text-decoration: underline;"><p>Bio</p></a>
+            </div>
+            <hr>
+            <br>
+            <h5>Bio</h5>
+            <div class="bio">
+                <p><%= locals.user.bio || "no bio available" %></p>
+            </div>
+        </div>
+
+        <div class="edit-profile">
+            <a href="/edit-profile" >Edit Profile</a>
+        </div>
+        
+        
+    </div>
+
+</body>
+<script src="/newsfeed.js"></script>
+</html>
+            
