@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iskryb</title>
+    <link rel="stylesheet" href="/styles/profileLayout.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <button class="navbutton">☰</button>
+        <div class="logo">
+            <h2><a href="/landingpage">Iskryb</a></h2>
+        </div>
+
+        <div class="logOutIcon">
+            <form class="log-out" action="/logOut" method="post">
+                <input class="logout-button" type="submit" value="Log out">
+            </form>
+        </div>
+        
+        <div class="nav-icons">
+            <form action="/logOut" method="post">
+                <input class="logout-button" type="submit" value="Log out">
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="sidebar-desktop">
+            <div class="sidebar-icons">
+                <h4><a href="/myProfile"><%= user.firstname%> <%= user.lastname %></a></h4>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="sidebar-icons">
+                <div class="logoInSidebar"> 
+                    <h2><a href="/landingpage">Iskryb</a></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="contentcontainer">
+
+           <div class="profilecard">
+
+            <div class="card_header">
+                <h1>Complete your profile</h1>
+                 <p>We want to know you more! Complete your profile by completing the forms below.</p>
+            </div>
+            
+
+            <div class="profile-forms">
+                <form action="/profile" method="post">
+                    <div class="box">
+
+                        <div class="box-form">
+                            <label>First Name:</label>
+                        <input class="userinput" type="text" name="firstname" value="<%= user.firstname %>" required>
+                        </div>
+                        <div class="box-form">
+                            <label>Last Name:</label>
+                        <input class="userinput" type="text" name="lastname" value="<%= user.lastname %>" required>
+                        </div>
+                        <div class="box-form">
+                            <label>Gender:</label>
+                        <input class="userinput" type="text" name="gender" value="<%= user.gender %>" required>
+                        </div>
+                        <div class="box-form">
+                            <label>Bio:</label>
+                        <textarea rows="10", cols="50" class="userbio" name="bio"><%= user.bio %></textarea>
+                        </div>
+       
+                    </div>
+                    
+                    <button class="profileButton" type="submit">Next</button>
+                </form>
+            </div>
+           </div>
+            
+        </div>
+        
+        
+    </div>
+
+</body>
+<script src="/newsfeed.js"></script>
+</html>
+            

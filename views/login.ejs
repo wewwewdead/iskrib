@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iskryb</title>
     <link rel="stylesheet" href="/styles/layout.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -52,14 +53,37 @@
                 <div class="loginbox">
                     <div ><h1 class="signup">Log In</h1></div>
                     <div><h4 class="haveaccount">Don't have an account? <a href="/landingpage"><span class="login">Sign up</span></a></h4></div>
+
+                    <div class="oauthCard">
+                        <div class="googleSignIn">
+
+                            <a class="googleButton" href="auth/google" role="button" aria-label="Sign In with Google">
+                                <span>
+                                    <i class="fab fa-google" style="font-size: 1rem; color: #243642"></i>
+                                </span>
+                                <span>Sign In with Google</span>
+                            </a>  
+
+                        </div>
+                    </div>
+
+                    <div class="Or"> 
+                        <p>OR</p>
+                    </div>
+
                     <div class="form">
                         <form action="/log" method="post">
 
                             <input type="text" class="userinput" id="email" name="username" required placeholder="email">
                             <input type="password" class="userinput" id="password" name="password" required placeholder="password">
                             <div class="showpassword">
-                                <input type="checkbox" id="myCheckbox">
-                                <label for="showpassword" id="hidepassword">showpassword</label>       
+                                <div class="showpass">
+                                    <input type="checkbox" id="myCheckbox">
+                                    <label for="showpassword" id="hidepassword">showpassword</label>  
+                                </div>  
+                                <div class="forgotpassword">
+                                    <a href="/forgotPassword">Forgot password?</a>
+                                </div> 
                             </div>
 
                             <% if(errorMessage && errorMessage.length > 0) {%>
@@ -67,6 +91,10 @@
                                     <p><%= errorMessage %></p>
                                 </div>
                             <% } %>
+                            
+                            <% if(locals.message) {%>
+                                <div class="errorMessage"><% message %></div>
+                                <% } %>
 
                             <div class="button">
                                 <input class="signupButton" type="submit" value="Log in"></input>
