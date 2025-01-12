@@ -349,6 +349,11 @@ body {
     color: #629584;
     font-size: 0.8rem;
 }
+.post_card {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem .5rem 1rem 0.5rem; 
+}
 
 @media (max-width: 768px) {
     .activate_sidebar {

@@ -46,26 +46,20 @@
 
         <div class="profile-container">
            <div class="profile-details">
-            <h2><%= locals.user.firstname %> <%= locals.user.lastname %></h2>
-            <p> <%= locals.user.email %></p>
+            <h2><%= userClicked.firstname %> <%= userClicked.lastname %></h2>
+            <p> <%= userClicked.email %></p>
             <br>
-            <div class="selection">
-                <a href="/myProfile" class="profileSelection"><p>Home</p></a>
-                <a href="/myProfile/Bio"class="profileSelection" style="text-decoration: underline;"><p>Bio</p></a>
-            </div>
+                <div class="selection">
+                    <a href="/user/<%= userClicked.id %>" class="profileSelection"><p>Home</p></a>
+                    <a href="/userBio/<%= userClicked.id %>"class="profileSelection" style="text-decoration: underline;"><p>Bio</p></a>
+                </div>         
             <hr>
             <br>
             <h5>Bio</h5>
             <div class="bio">
-                <p class="bioParagraph"><%= locals.user.bio || "no bio available" %></p>
+                <p><%= userClicked.bio || "no bio available" %></p>
             </div>
-        </div>
-
-        <div class="edit-profile">
-            <a href="/edit-profile" >Edit Profile</a>
-        </div>
-        
-        
+        </div>      
     </div>
 
 </body>
