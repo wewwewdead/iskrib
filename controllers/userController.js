@@ -1,3 +1,4 @@
+import { parse } from "path";
 import db from "../db/connection.js";
 import { resetPassword } from "./authcontroller.js";
 
@@ -46,18 +47,82 @@ export const updateProfile = async (req, res) => {
 //get all post for newsfeed
 export const getNewsfeed = async (req, res) => {
     try {
+        const user = await db.query('SELECT * FROM users WHERE id = $1', [req.user.id]);
         //pagination of post into the newsfeed
-        const page = req.query.page || 1;
+        const page = parseInt(req.query.page) || 1;
         const limit = 5;
         const offset = (page - 1) * limit;
-        const result = await db.query('SELECT p.id, p.user_id, p.content, p.created_at, u.firstname, u.lastname FROM posts JOIN users u ON p.user_id = u.id ORDER BT p.created_at DESC LIMIT $1, OFFSET $2', 
+        const getPosts = await db.query('SELECT posts.id, posts.user_id, posts.content, posts.title, posts.created_at, users.firstname, users.lastname FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.created_at DESC LIMIT $1 OFFSET $2', 
             [limit, offset]);
 
-        const allPosts = result.rows;
-        res.render('homepage', {posts: allPosts});
+        const countResult = await db.query('SELECT COUNT(*) FROM posts');
+        const totalPosts = parseInt(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalPosts / limit);
+
+        res.render('homepage', {posts: getPosts.rows,
+            currentPage: page, 
+            totalPages: totalPages,
+            user: user.rows[0]
+        });
 
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error fetching newsfeed" });
+    }
+}
+
+//get the userprofile page when their name is clicked in the newsfeed
+export const getUserProfile = async(req, res) => {
+    try {
+        const user = await db.query('SELECT * FROM users WHERE id = $1', [req.user.id]);// Get the logged-in user's data
+
+        const userId = req.params.id;
+        const userResult = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
+
+        if(userResult.rows.length > 0) {
+             const page = parseInt(req.query.page) || 1;  // Get the page number from the query string (default to 1 if not provided)
+             const limit =  5;
+             const offset = (page - 1) * limit;
+
+        //fetch users porst into profilepage 
+            const getPost = await db.query("SELECT * FROM posts WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3", [userId, limit, offset]);
+
+            const totalPostsResult = await db.query('SELECT COUNT(*) AS total FROM posts WHERE user_id = $1', [userId]);
+            const totalPosts = parseInt(totalPostsResult.rows[0].total, 10);
+            const totalPages = Math.ceil(totalPosts / limit); //math.ceil going to round a number upward to its nearest integer
+        
+            res.render('userProfile', {
+                userClicked: userResult.rows[0],
+                posts: getPost.rows,
+                currentPage: page, 
+                totalPages:totalPages,
+                user: req.user
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error loading post');
+    }
+}
+
+
+//get user post if the post was clicked 
+export const getUserPost = async(req, res) => {
+    try {
+        const userId = req.params.id;
+        const postResult = await db.query("SELECT posts.id, posts.user_id, posts.content, posts.created_at, posts.title, users.firstname, users.lastname  FROM posts JOIN users ON posts.user_id = users.id WHERE posts.id = $1", [userId]);
+        const post = postResult.rows[0];
+
+        if(postResult.rows.length > 0) {
+            res.render('post', {post: post,
+                user: req.user}
+            );
+        } else {
+            return res.status(404).render('404', { message: 'Post not found' });
+        }
+  
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error loading post');
     }
 }

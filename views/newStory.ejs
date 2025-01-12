@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iskryb</title>
+    <link rel="stylesheet" href="/styles/newstory.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <button class="navbutton">☰</button>
+        <div class="a">
+            <div class="logo">
+                <h2><a href="/landingpage">Iskryb</a></h2>
+            </div>
+        </div>
+    
+        <div class="b">
+            <div class="publish-icon">
+                <button class="publishButton" type="submit" form="createPost">Publish</button>
+            </div>
+
+            <div class="nav-icons">
+                <form action="/logOut" method="post">
+                    <input class="logout-button" type="submit" value="Log out">
+                </form>
+            </div>
+        </div>
+        
+        
+        
+    </nav>
+
+    <div class="container">
+
+        <div class="sidebar-desktop">
+            <div class="sidebar-icons">
+                <h4><a href="/myProfile"><%= locals.user.firstname%> <%= locals.user.lastname %></a></h4>
+                <p></p><a href="/landingpage">Home</a></p>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="sidebar-icons">
+                <div class="logoInSidebar"> 
+                    <h2><a href="/landingpage">Iskryb</a></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="contentcontainer">
+            <section>
+                <form id="createPost" action="/publish" method="post"> 
+                    <div class="box">
+                        <input class="title" type="text" name="title" placeholder="Title" required>
+                        <textarea class="textarea" name="content" id="content" placeholder="Write your thoughts here..." required></textarea>
+                    </div>
+                </form>
+            </section>
+    </div>
+
+</body>
+<script src="/newsfeed.js"></script>
+</html>
+            

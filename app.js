@@ -9,10 +9,13 @@ import userRoutes from './routes/userRoutes.js';
 import './config/passportConfig.js'
 import path from "path";
 import forgotPasswordRoutes from "./routes/forgotPasswordRoutes.js";
+import methodOverride from 'method-override';
 
 dotenv.config();
 const app = express();
 const port = 3000;
+
+app.use(methodOverride('_method'));
 
 app.use(express.json());
 app.set('view engine', 'ejs');

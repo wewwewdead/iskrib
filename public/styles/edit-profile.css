@@ -165,6 +165,7 @@ body {
     border: 1px solid #ccc;
 }
 .userbio {
+    white-space: pre-wrap;
     padding: 1rem;
     font-size: 1rem;
     border-radius: 10px;
