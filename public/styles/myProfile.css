@@ -180,7 +180,6 @@ hr{
 .hide{
     display: none;
 }
-
 .show{
     position: relative;
     display: flex;
@@ -268,17 +267,24 @@ hr{
 }
 
 .dialog-buttons button[type="submit"] {
-    background-color: #007BFF;
+    background-color: #629584;
     color: white;
 }
 
 .dialog-buttons button[type="button"] {
-    background-color: #f0f0f0;
+    background-color: #243642;
+    color: white;
+}
+#cancelEdit:hover {
+    background-color: #629584;
+}
+.dialog-buttons button[type="submit"]:hover{
+  background-color: #243642;
 }
 
 /* Style for the confirm delete button (Yes) */
 #confirmDelete {
-    background-color: #243642; /* Red color for delete */
+    background-color: #243642; 
     color: white;
     transition: background-color 0.3s ease;
 }

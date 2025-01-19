@@ -165,8 +165,19 @@ body {
     width: 55%;
     height: 100%;
     font-size: 0.8rem;
-    padding: 0.3rem 0rem 0.3rem 0rem;
+    padding: 0.8rem 0rem 0rem 0rem;
 }
+
+.reply-input {
+    margin-top: 10px;
+}
+
+.replies-container {
+    margin-left: 20px;
+    border-left: 2px solid #ccc;
+    padding-left: 10px;
+}
+
 .author {
     text-decoration: none;
     color: #629584;
@@ -180,14 +191,198 @@ body {
     text-transform: capitalize;
     font-weight: 450;
     padding: 0.3rem 0rem 0.3rem 0rem;
+    pointer-events: none;
+}
+.read_more_toggle{
+    color: #629584;
+    font-size: 0.8rem;
+    padding-bottom: 0.5rem;
+}
+.read_more_toggle:hover{
+    color: #243642;
 }
 
+.profile_link {
+    pointer-events: none;
+}
+span{
+    pointer-events: auto;
+}
 .content > a {
     text-decoration: none;
     color: #629584;
     font-size: 0.8rem;
 }
+.content_reply {
+    font-size: 0.7rem;
+}
+.reply_author {
+    font-size: 0.8rem;
+}
+.comments-section {
+    padding-top: 1rem;
+    width: 55%;
+}
+.comments-container {
+    border: none;
+    border-radius: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+    margin-top: 10px;
+  }
+.comments-container::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 5px;
+}
 
+.comments-container::-webkit-scrollbar-track {
+    background: #ddd;
+    border-radius: 5px;
+
+}
+.comments-container::-webkit-scrollbar-thumb {
+    background: #629584;
+
+}
+
+.comments-container.hidden {
+    display: none;
+}
+  
+.add-comment {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+}
+  
+  
+.comment {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #ddd;
+    
+}
+.comment-input {
+    box-sizing: border-box;
+    padding: 1rem 0.5rem;
+    width: 60%;
+    height: 2rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin-left: 0.3rem;
+}
+.add-comment-btn{
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 0.6rem;
+    width: 90px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: #629584;
+    color: #FFFFFF;
+    border: none;
+}
+.add-comment-btn:hover{
+    background-color: #243642;
+}
+.toggle-comments {
+    cursor: pointer;
+    padding: 0.5rem;
+    background-color: #629584;
+    color: #FFFFFF;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    border: none;
+    margin-left: 0.3rem;
+}
+.toggle-comments:hover{
+    background-color: #243642;
+}
+.hidden {
+    display: none;
+}
+.reply-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0.5rem;
+    background-color: #629584;
+    color: #FFFFFF;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    border: none;
+    margin: 0.5rem 0rem 0.5rem 0rem ;
+    width: 100px;
+    height: 25px;
+}
+.reply-btn:hover{
+    background-color: #243642;
+
+}
+
+.reply-comment-input {
+    box-sizing: border-box;
+    padding: 0.9rem 0.5rem;
+    height: 0.9rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+.submit-reply-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0.5rem;
+    background-color: #629584;
+    color: #FFFFFF;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    border: none;
+    margin: 0.5rem 0rem 0.5rem 0rem ;
+    width: 100px;
+    height: 25px;
+}
+.submit-reply-btn:hover{
+    background-color: #243642;
+}
+
+.replycontainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+}
+.replies-container{
+    max-height: 400px; /* Example height */
+    overflow-y: auto;
+}
+.load-more-replies-btn{
+    border: none;
+    color: #629584;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    width: 30px;
+}
+.show-more-replies {
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    text-decoration: underline;
+    color: #629584;
+    font-size: 0.8rem;
+}
+.show-more-replies:hover {
+    color: #243642;
+}
 @media (max-width: 768px) {
     .sidebar-desktop {
         display: none;
