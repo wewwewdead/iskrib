@@ -26,7 +26,7 @@ router.get('/verify-email', async (req, res) => {
         const user = result.rows[0];
         await db.query("UPDATE users SET verified = true, verification_token = NULL, token_expiry = NULL WHERE id = $1", [user.id]); 
         //if token exist then it will verify users and make the verified boolean into false and remove the token in the column "verification_token"
-        res.send(`Verification success! You can now log in using you gmail!`);
+        res.send(`Verification success! You can now log in using yourd gmail!`);
 
     } catch (error) {
         console.error(error);
@@ -86,9 +86,9 @@ router.post('/profile', updateProfile);
 
 router.get('/about', (req, res) => {
     if(!req.isAuthenticated()) {
-        res.redirect('login')
+        res.render('about');
     } else {
-        res.redirect('/homepage');
+        res.redirect('/homepage'); 
     }
 })
 
@@ -157,68 +157,13 @@ router.get('/edit-profile', async(req, res) => {
 //get post if user clicks the title of the post in newsfeed
 router.get('/post/:id', getUserPost);
 
-// router.get('/post/:id', async(req, res) => {
-//     try {
-//         const userId = req.params.id;
-//         const postResult = await db.query("SELECT posts.id, posts.user_id, posts.content, posts.created_at, posts.title, users.firstname, users.lastname  FROM posts JOIN users ON posts.user_id = users.id WHERE posts.id = $1", [userId]);
-//         const post = postResult.rows[0];
 
-//         if(postResult.rows.length > 0) {
-//             res.render('post', {post: post,
-//                 user: req.user}
-//             );
-//         } else {
-//             return res.status(404).render('404', { message: 'Post not found' });
-//         }
-  
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).send('Error loading post');
-//     }
-// })
 
 router.get('/user/:id', getUserProfile);
 //get the user profile page when clicked the username in newsfeed 
-// router.get('/user/:id', async(req, res) => {
-//     try {
-//         const user = await db.query('SELECT * FROM users WHERE id = $1', [req.user.id]);
-
-//         const userId = req.params.id;
-//         const userResult = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
-
-//         if(userResult.rows.length > 0) {
-//              const page = parseInt(req.query.page) || 1;  // Get the page number from the query string (default to 1 if not provided)
-//              const limit = parseInt(req.query.limit) || 5;
-//              const offset = (page - 1) * limit;
-
-//         //fetch users porst into profilepage 
-//             const getPost = await db.query("SELECT * FROM posts WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3", [userId, limit, offset]);
-
-//             const totalPostsResult = await db.query('SELECT COUNT(*) AS total FROM posts WHERE user_id = $1', [userId]);
-//             const totalPosts = parseInt(totalPostsResult.rows[0].total);
-//             const totalPages = Math.ceil(totalPosts / limit); //math.ceil going to round a number upward to its nearest integer
-        
-//             if(totalPostsResult.rows.length > 0) {
-                
-//                 res.render('userProfile', {
-//                     userClicked: userResult.rows[0],
-//                     posts: getPost.rows,
-//                     currentPage: page, 
-//                     totalPages:totalPages,
-//                     user: req.user
-//                 });
-//             } else {
-//                 return res.status(404).render('404', { message: 'Profile not found' });
-//             }
-//         }
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).send('Error loading post');
-//     }
-// })
 
 
-router.get('/userBio/:id', async(req, res) => {
+router.get('/userBio/:id', async(req, res) => { //to get the userbio if the users visit into someone's profile and click the bio
     try {
         const userId = req.params.id;
         const userResult = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
@@ -254,7 +199,7 @@ router.get('/userBio/:id', async(req, res) => {
 router.post('/edit-profile',  updateProfile)
 router.post('/publish', createPost)
 
-router.get('/api/posts/:id', async(req, res) => {
+router.get('/api/posts/:id', async(req, res) => { //to enable the readmore toggle in the newsfeed and profilepage
     try {
         const postId = req.params.id;
         const postResult = await db.query("SELECT * FROM posts WHERE id = $1", [postId]);
@@ -269,7 +214,7 @@ router.get('/api/posts/:id', async(req, res) => {
 
 
 
-router.post('/posts/:id', async (req, res) => {
+router.post('/posts/:id', async (req, res) => { //to update a data of user into the databse
     const { id } = req.params;
     const { title, content } = req.body;
 
@@ -307,5 +252,120 @@ router.delete('/delete/posts/:id', async(req, res) => {
       }
 });
 
+router.post('/api/posts/:id/comments', async (req, res) => { //to fetch comments in a specific from database into newsfeed and userprofile
+    const postId = req.params.id;
+    const userId = req.user.id; // Assume logged-in user ID is in req.user
+    const { content } = req.body;
+  
+    if (!content) {
+      return res.status(400).send({ message: 'Comment content cannot be empty' });
+    }
+  
+    try {
+      const result = await db.query(
+        'INSERT INTO comments (post_id, user_id, content, created_at) VALUES ($1, $2, $3, NOW()) RETURNING *',
+        [postId, userId, content]
+      );
+  
+      const newComment = result.rows[0];
+      const userResult = await db.query('SELECT id, firstname, lastname FROM users WHERE id = $1', [userId]);
+      const user = userResult.rows[0];
+  
+      res.status(201).send({ ...newComment, user });
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      res.status(500).send({ message: 'Error adding comment' });
+    }
+  });
+
+  
+  
+  router.post('/api/comments/:id/get/replies', async (req, res) => {
+    const commentId = req.params.id; // id of the comment being replied to
+    const userId = req.user.id; // logged-in user id from req.user
+    const { content } = req.body; // content of the reply
+  
+    if (!content) {
+      return res.status(400).send({ message: 'Reply content cannot be empty' });
+    }
+  
+    try {
+      // insert the reply into the database
+      const result = await db.query(
+        'INSERT INTO replies (comment_id, user_id, content, created_at) VALUES ($1, $2, $3, NOW()) RETURNING *',
+        [commentId, userId, content]
+      );
+  
+      const newReply = result.rows[0];
+  
+      // fetch user details
+      const userResult = await db.query('SELECT id, firstname, lastname FROM users WHERE id = $1', [userId]);
+      const userData = userResult.rows[0];
+  
+      // combine reply and user details
+      res.status(201).send({
+        ...newReply, userData,
+      });
+    } catch (error) {
+      console.error('Error adding reply:', error);
+      res.status(500).send({ message: 'Error adding reply' });
+    }
+  });
+
+
+  router.get('/api/comments/:id/replies', async (req, res) => {
+
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    const commentId = req.params.id;
+    const page = parseInt(req.query.page) || 1; // Get the current page (default to 1)
+    const pageSize = 5; // Number of replies to load per request
+    const offset = (page - 1) * pageSize;
+  
+    try {
+        // query to fetch replies for the specific comment
+        const result = await db.query(`SELECT r.id, r.content, r.created_at, u.id AS user_id, u.firstname, u.lastname
+            FROM replies r
+            JOIN users u ON r.user_id = u.id
+            WHERE r.comment_id = $1
+            LIMIT $2 OFFSET $3`,
+            [commentId, pageSize, offset]
+        );
+
+        const replies = result.rows;
+
+        // get the total number of replies to determine if there are more replies to load
+        const totalResult = await db.query(
+            'SELECT COUNT(*) AS total FROM replies WHERE comment_id = $1',
+            [commentId]
+        );
+        const totalReplies = totalResult.rows[0].total;
+        const totalPages = Math.ceil(totalReplies / pageSize);
+
+        // Determine if more pages are available
+        const hasMoreReplies = totalReplies < pageSize;
+
+        // console.log(`total replies ${totalReplies}`);
+        // console.log(`total page ${totalPages}`);
+        
+        // send the fetched replies as a response
+        res.json({
+            replies: replies,
+            totalReplies: totalReplies,
+            totalPages: totalPages,
+            currentPage: page,
+            hasMoreReplies: hasMoreReplies
+        });
+
+
+    } catch (error) {
+        console.error('Error fetching replies:', error);
+        res.status(500).send({ message: 'Error fetching replies' });
+    }
+
+});
+
+  
 export default router;
 

@@ -30,7 +30,7 @@ passport.use('local', new Strategy(async function verify(username, password, cb)
                 return cb(null, false, {message: 'invalid password or email'})
             }
         } else {
-            return cb(null, false);
+            return cb(null, false, {message: 'email or password not exist, please SIGN UP!'});
         }
     } catch (error) {
         console.log('error')

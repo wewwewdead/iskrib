@@ -67,7 +67,7 @@
            </div>
 
            <div class="newsfeedContainer">
-            <section>
+            <section class="content">
                 <h1><%= post.title %></h1>
                 <p><%= post.content %></p>
                 <br>
@@ -75,7 +75,7 @@
                 <small><%= new Date(post.created_at).toLocaleString()  %></small>           
             </section>
            </div>
-           <div><a href="/homepage">Back</a></div>
+           <div><a class="add-comment-btn" href="/homepage">Back</a></div>
         
     </div>
 

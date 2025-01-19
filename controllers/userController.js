@@ -52,12 +52,42 @@ export const getNewsfeed = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = 5;
         const offset = (page - 1) * limit;
-        const getPosts = await db.query('SELECT posts.id, posts.user_id, posts.content, posts.title, posts.created_at, users.firstname, users.lastname FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.created_at DESC LIMIT $1 OFFSET $2', 
-            [limit, offset]);
+        const getPosts = await db.query(`
+            SELECT posts.id AS post_id, posts.title, posts.content, posts.created_at, posts.user_id, 
+                   users.firstname, users.lastname, 
+                   json_agg(json_build_object(
+                       'id', comments.id, 
+                       'content', comments.content, 
+                       'created_at', comments.created_at,
+                       'user_id', comments.user_id,
+                       'user', json_build_object('id', comment_users.id, 'firstname', comment_users.firstname, 'lastname', comment_users.lastname)
+                   )) AS comments
+            FROM posts 
+            LEFT JOIN comments ON posts.id = comments.post_id 
+            LEFT JOIN users ON posts.user_id = users.id
+            LEFT JOIN users AS comment_users ON comments.user_id = comment_users.id
+            GROUP BY posts.id, users.firstname, users.lastname 
+            ORDER BY posts.created_at DESC
+            LIMIT $1 OFFSET $2
+        `, [limit, offset]);
 
-        const countResult = await db.query('SELECT COUNT(*) FROM posts');
+        const countResult = await db.query('SELECT COUNT(*) FROM posts');// execute a SQL query to count the total number of rows in the 'posts' table
         const totalPosts = parseInt(countResult.rows[0].count);
         const totalPages = Math.ceil(totalPosts / limit);
+
+        // console.log(getPosts.rows[0].comments);
+        const posts = getPosts.rows;
+
+        // Fetch replies for each comment within posts
+        // for (let post of posts) {
+        //     if (post.comments && post.comments.length > 0) {
+        //         for (let comment of post.comments) {
+        //             const replies = await fetchReplies(comment.id, { page: 1, limit: 10 });
+        //             comment.replies = replies;
+        //         }
+        //     }
+        // }
+
 
         res.render('homepage', {posts: getPosts.rows,
             currentPage: page, 
@@ -70,12 +100,29 @@ export const getNewsfeed = async (req, res) => {
         res.status(500).json({ message: "Error fetching newsfeed" });
     }
 }
+// Utility function for fetching replies
+// const fetchReplies = async (commentId, { page = 1, limit = 10 }) => {
+//     const offset = (page - 1) * limit;
+
+//     try {
+//         const result = await db.query(`
+//             SELECT r.id, r.content, r.created_at, u.id AS user_id, u.firstname, u.lastname
+//             FROM replies r
+//             JOIN users u ON r.user_id = u.id
+//             WHERE r.comment_id = $1
+//             LIMIT $2 OFFSET $3
+//         `, [commentId, limit, offset]);
+
+//         return result.rows;
+//     } catch (error) {
+//         console.error(`Error fetching replies for comment ${commentId}:`, error);
+//         return [];
+//     }
+// };
 
 //get the userprofile page when their name is clicked in the newsfeed
 export const getUserProfile = async(req, res) => {
     try {
-        const user = await db.query('SELECT * FROM users WHERE id = $1', [req.user.id]);// Get the logged-in user's data
-
         const userId = req.params.id;
         const userResult = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
 

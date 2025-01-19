@@ -63,6 +63,7 @@
                     <div class="post-title">
                         <h2><%= post.title %></h2>
                         <div class="post-settings"><p class="settings">⋯</p>
+                            
                             <div class="hide">
                                 <div class="edit-box">
                                     <a class="edit-post menu" href="#" data-title="<%= post.title %>" data-content="<%= post.content %>" data-id="<%= post.id %>">Update post</a>
@@ -150,7 +151,7 @@
 
         // Open delete confirmation dialog
         deletePostButton.forEach(button => {
-            console.log("Delete button found:", button); // Debugging: Check if buttons are selected
+            console.log("Delete button found:", button); 
             button.addEventListener('click', (e) => {
                 e.preventDefault(); // Prevent default link action
                 postIdToDelete = button.getAttribute('data-id'); // Get the post ID from data-id attribute
@@ -209,7 +210,6 @@
         profilePost.forEach(post => {
             
             post.addEventListener('click', async(e)=> {
-                console.log(e.target);
                 if(e.target.classList.contains('read-more')) {
                     e.preventDefault();
                     const postId = e.target.getAttribute('data-id');
