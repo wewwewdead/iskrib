@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () =>{
 
 
 
+
 document.addEventListener('DOMContentLoaded', () => {
     // toggle comments visibility
     document.addEventListener('click', (e) => {
@@ -389,6 +390,46 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     });
 })
+
+document.addEventListener('click', async (e) => {
+    console.log(e.target);
+    if (e.target.classList.contains('like-btn')) {
+        console.log('click')
+      const button = e.target;
+      const postId = button.getAttribute('data-post-id');
+  
+      try {
+        const response = await fetch(`/api/posts/${postId}/like`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          const likeCountElement = document.querySelector(`.like-id-${postId}`);
+
+          if(likeCountElement){
+            likeCountElement.textContent = data.like_count;
+          }
+  
+          if (data.liked) {
+            button.style.fill = 'rgb(227, 45, 45)'; //change color to red if users clicks like button
+            
+          } else {
+            //remove color of the button if users unlike
+            button.style.fill = '#E2F1E7';
+          }
+  
+        } else {
+          alert('Failed to toggle like.');
+        }
+      } catch (error) {
+        console.error('Error toggling like:', error);
+        alert('Error toggling like.');
+      }
+    }
+  });
+  
 
 
 

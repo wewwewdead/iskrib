@@ -60,8 +60,12 @@ export const getNewsfeed = async (req, res) => {
                        'content', comments.content, 
                        'created_at', comments.created_at,
                        'user_id', comments.user_id,
-                       'user', json_build_object('id', comment_users.id, 'firstname', comment_users.firstname, 'lastname', comment_users.lastname)
-                   )) AS comments
+                       'user', json_build_object('id', comment_users.id, 'firstname', comment_users.firstname, 'lastname', comment_users.lastname),
+                       'reply_count', (SELECT COUNT(*) FROM replies WHERE replies.comment_id = comments.id)
+                   )) FILTER (WHERE comments.id IS NOT NULL) AS comments,
+       COUNT(comments.id) AS comment_count,
+       (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.id) AS like_count,
+       EXISTS(SELECT 1 FROM likes WHERE likes.post_id = posts.id AND likes.user_id = $3) AS liked
             FROM posts 
             LEFT JOIN comments ON posts.id = comments.post_id 
             LEFT JOIN users ON posts.user_id = users.id
@@ -69,7 +73,7 @@ export const getNewsfeed = async (req, res) => {
             GROUP BY posts.id, users.firstname, users.lastname 
             ORDER BY posts.created_at DESC
             LIMIT $1 OFFSET $2
-        `, [limit, offset]);
+        `, [limit, offset, req.user.id]);
 
         const countResult = await db.query('SELECT COUNT(*) FROM posts');// execute a SQL query to count the total number of rows in the 'posts' table
         const totalPosts = parseInt(countResult.rows[0].count);
@@ -87,7 +91,6 @@ export const getNewsfeed = async (req, res) => {
         //         }
         //     }
         // }
-
 
         res.render('homepage', {posts: getPosts.rows,
             currentPage: page, 

@@ -267,6 +267,47 @@ span{
     border-bottom: 1px solid #ddd;
     
 }
+.hide_comments {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.comment_count {
+    font-size: 0.8rem;
+    color: #629584;
+}
+.like {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-left: 0.3rem;
+    gap: 1rem;
+}
+.icons-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+}
+.liked{
+    fill: rgb(227, 45, 45);
+}
+.unlike {
+    fill: #E2F1E7;
+}
+.like-button{
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.likeCount{
+    color: #629584;
+    font-size: 0.8rem;
+}
 .comment-input {
     box-sizing: border-box;
     padding: 1rem 0.5rem;

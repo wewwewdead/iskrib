@@ -78,7 +78,33 @@
 
                                 <!-- Comments Section -->
                                 <div class="comments-section">
-                                    <button class="toggle-comments" data-id="<%= post.post_id %>" data-open="false">Show Comments</button>
+                                    <div class="hide_comments">
+                                        <button class="toggle-comments toggle-comments<%=post.post_id%>" data-id="<%= post.post_id %>" data-open="false">Show Comments</button>
+
+                                        
+
+                                        <div class="like">
+                                            <div class="icons-box">
+                                                <svg class="svg-comments" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#629584" viewBox="0 0 16 16">
+                                                    <path fill="#629584" d="M12.344 11.458A5.28 5.28 0 0 0 14 7.526C14 4.483 11.391 2 8.051 2S2 4.483 2 7.527c0 3.051 2.712 5.526 6.059 5.526a6.6 6.6 0 0 0 1.758-.236q.255.223.554.414c.784.51 1.626.768 2.512.768a.37.37 0 0 0 .355-.214.37.37 0 0 0-.03-.384 4.7 4.7 0 0 1-.857-1.958v.014z">
+                                                    </path>
+                                                </svg>
+                                                <span class="comment_count"> <%= post.comment_count %></span>
+                                            </div>
+
+                                            <div class="icons-box">
+                                                <button class="like-button">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" >
+                                                    <path data-post-id="<%= post.post_id %>" class="like-btn <%= post.liked ? 'liked' : 'unlike' %>" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                                                    </svg>
+        
+                                                </button>
+                                                  <span class="likeCount like-id-<%= post.post_id %>"><%= post.like_count %></span>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+
                                     <div class="comments-container hidden" id="comments-<%= post.post_id %>">
                                         <% if (post.comments && post.comments.length > 0) { %>
                                             <% post.comments.forEach(comment => { %>
@@ -101,7 +127,16 @@
                                                          
 
                                                          <!-- reply button -->
-                                                           <button id="button-<%= comment.id %>" class="reply-btn" data-comment-id="<%= comment.id %>" data-user="<%= user.firstname %> <%= user.lastname %>">show replies</button>
+                                                          <div class="hide_comments">
+                                                            <button id="button-<%= comment.id %>" class="reply-btn" data-comment-id="<%= comment.id %>" data-user="<%= user.firstname %> <%= user.lastname %>">show replies</button>
+                                                            <svg class="svg-comments" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#629584" viewBox="0 0 16 16">
+                                                                <path fill="#629584" d="M12.344 11.458A5.28 5.28 0 0 0 14 7.526C14 4.483 11.391 2 8.051 2S2 4.483 2 7.527c0 3.051 2.712 5.526 6.059 5.526a6.6 6.6 0 0 0 1.758-.236q.255.223.554.414c.784.51 1.626.768 2.512.768a.37.37 0 0 0 .355-.214.37.37 0 0 0-.03-.384 4.7 4.7 0 0 1-.857-1.958v.014z">
+                                                                </path>
+                                                            </svg>
+                                                            
+                                                            <span class="comment_count"> <%= comment.reply_count %></span>
+                                                          </div>
+                                                           
                                                            
                                                            <!-- reply input box, initialy hidden-->
                                                             <div class="reply-input<%= comment.id %> replycontainer hidden" id="reply-input-<%= comment.id %>">
@@ -127,6 +162,8 @@
                                         <input type="text" class="comment-input" id="comment-input-<%= post.post_id %>" placeholder="Write a comment...">
                                         <button class="add-comment-btn" data-id="<%= post.post_id %>">Leave a Comment</button>
                                     </div>
+
+                                    
                                 </div>
                             </div>
                         <% }); %>

@@ -340,6 +340,7 @@ router.post('/api/posts/:id/comments', async (req, res) => { //to fetch comments
             'SELECT COUNT(*) AS total FROM replies WHERE comment_id = $1',
             [commentId]
         );
+        
         const totalReplies = totalResult.rows[0].total;
         const totalPages = Math.ceil(totalReplies / pageSize);
 
@@ -365,6 +366,62 @@ router.post('/api/posts/:id/comments', async (req, res) => { //to fetch comments
     }
 
 });
+
+// post /api/posts/:id/like
+router.post('/api/posts/:id/like', async (req, res) => {
+    const postId = req.params.id;
+    const userId = req.user.id; 
+  
+    try {
+      //check if the user already liked the post
+      const existingLike = await db.query(
+        'SELECT * FROM likes WHERE post_id = $1 AND user_id = $2',
+        [postId, userId]
+      );
+      //get the count of likes for the post
+      const likeCountResult = await db.query(
+        'SELECT COUNT(*) AS like_count FROM likes WHERE post_id = $1',
+        [postId]);
+
+        const likeCount = likeCountResult.rows[0].like_count;
+  
+      if (existingLike.rows.length > 0) {
+        // unlike the post if already liked
+        await db.query('DELETE FROM likes WHERE post_id = $1 AND user_id = $2', [
+          postId,
+          userId,
+        ]);
+        
+        //get the count of likes for the post
+        const likeCountResult = await db.query(
+        'SELECT COUNT(*) AS like_count FROM likes WHERE post_id = $1',
+        [postId]);
+
+        const likeCount = likeCountResult.rows[0].like_count;
+        res.status(200).json({ liked: false, like_count: likeCount });
+      } else {
+        // like the post
+        await db.query(
+          'INSERT INTO likes (post_id, user_id) VALUES ($1, $2)',
+          [postId, userId]
+        );
+
+        //get the count of likes for the post
+        const likeCountResult = await db.query(
+            'SELECT COUNT(*) AS like_count FROM likes WHERE post_id = $1',
+            [postId]);
+    
+        const likeCount = likeCountResult.rows[0].like_count;
+        res.status(200).json({ liked: true, like_count: likeCount });
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      res.status(500).json({ message: 'Error toggling like' });
+    }
+  });
+  
+
+
 
   
 export default router;
