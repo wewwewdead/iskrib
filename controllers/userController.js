@@ -64,11 +64,19 @@ export const getNewsfeed = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = 5;
         const offset = (page - 1) * limit;
+
+        // ensure `filter` is either an array or a single value and then check for "followed"
+        const filters = req.query.filter ? (Array.isArray(req.query.filter) ? req.query.filter : [req.query.filter]) : [];
+    
         // check if "You Follow" filter is applied
-        const onlyFollowed = req.query.filter === 'followed';
+        const onlyFollowed = filters.includes('followed');
+        const poem = filters.includes('poem');
+        const story = filters.includes('story');
+        const essay = filters.includes('essay');
+        const allPosts = filters.includes('allposts');
 
         const getPosts = await db.query(`
-            SELECT posts.id AS post_id, posts.title, posts.content, posts.created_at, posts.image, posts.user_id, 
+            SELECT posts.id AS post_id, posts.title, posts.content, posts.created_at, posts.image, posts.category, posts.user_id, 
                    users.firstname, users.lastname, users.profile_pictures AS user_profile_picture, 
                    json_agg(json_build_object(
                        'id', comments.id, 
@@ -117,17 +125,25 @@ export const getNewsfeed = async (req, res) => {
             LEFT JOIN comments ON posts.id = comments.post_id 
             LEFT JOIN users ON posts.user_id = users.id
             LEFT JOIN users AS comment_users ON comments.user_id = comment_users.id
-            ${onlyFollowed ? 'JOIN follows ON follows.following_id = posts.user_id WHERE follows.follower_id = $3' : ''}
+            ${onlyFollowed ? 'JOIN follows ON follows.following_id = posts.user_id WHERE follows.follower_id = $3' : 'WHERE 1=1'}
+            ${poem || story || essay ? `AND posts.category IN ('${poem ? 'poem' : ''}${poem && (story || essay) ? ',' : ''}${story ? 'story' : ''}${(poem || story) && essay ? ',' : ''}${essay ? 'essay' : ''}')` : ''}
             GROUP BY posts.id, users.firstname, users.lastname, users.profile_pictures
             ORDER BY posts.created_at DESC
             LIMIT $1 OFFSET $2
         `, [limit, offset, req.user.id]); //the onlyfollowed code line is filtering the post in newsfeed of logged users, it only shows the post of users they follow
+        //WHERE 1=1 clause when onlyFollowed is false. This ensures that the query still works correctly even if the user is not following anyone (i.e., when onlyFollowed is false). Otherwise, it would behave as if no filtering condition was applied to the posts.
         
         const countResult = await db.query(
-            onlyFollowed ? `SELECT COUNT(*) FROM posts 
-               JOIN follows ON follows.following_id = posts.user_id 
-               WHERE follows.follower_id = $1`
-            : `SELECT COUNT(*) FROM posts`, onlyFollowed ? [req.user.id] : []);// execute a SQL query to count the total number of rows in the 'posts' table
+            onlyFollowed 
+                ? `SELECT COUNT(*) FROM posts 
+                    JOIN follows ON follows.following_id = posts.user_id 
+                    WHERE follows.follower_id = $1
+                    ${poem || story || essay ? `AND posts.category IN ('${poem ? 'poem' : ''}${poem && (story || essay) ? ',' : ''}${story ? 'story' : ''}${(poem || story) && essay ? ',' : ''}${essay ? 'essay' : ''}')` : ''}`
+                : `SELECT COUNT(*) FROM posts 
+                    ${poem || story || essay ? `WHERE posts.category IN ('${poem ? 'poem' : ''}${poem && (story || essay) ? ',' : ''}${story ? 'story' : ''}${(poem || story) && essay ? ',' : ''}${essay ? 'essay' : ''}')` : ''}`,
+            onlyFollowed ? [req.user.id] : []
+        );
+        // execute a SQL query to count the total number of rows in the 'posts' table
 
         const totalPosts = parseInt(countResult.rows[0].count);
         const totalPages = Math.ceil(totalPosts / limit);
@@ -151,6 +167,11 @@ export const getNewsfeed = async (req, res) => {
             totalPages: totalPages,
             user: user.rows[0],
             filter: onlyFollowed ? 'followed' : 'public',
+            category: {
+                poem: poem, 
+                story: story, 
+                essay: essay,
+                allposts: allPosts}
         });
 
     } catch (error) {

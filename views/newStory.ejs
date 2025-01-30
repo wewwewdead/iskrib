@@ -53,6 +53,12 @@
             <section>
                 <form id="createPost" action="/publish" method="post" enctype="multipart/form-data"> 
                     <div class="box">
+                        <select name="category" id="category" required>
+                            <option value="poem">Poem</option>
+                            <option value="story">Story</option>
+                            <option value="essay">Essay</option>
+                        </select>
+
                         <input class="title" type="text" name="title" placeholder="Title" required>
                         <label class="upload_photo" for="upload_photo">Upload photo</label>
                         <div class="errorMessage">

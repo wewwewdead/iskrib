@@ -123,15 +123,28 @@ form {
     padding: 0.3rem;
     margin: 0.5rem 0rem 0.5rem 0rem;
 }
+#upload_photo {
+    display: none;
+}
 .upload_photo:hover {
     background-color: #243642;
 }
+#category {
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+}
+#category:focus {
+    border-width: 2px;
+    border-color: #629584;
+    outline: none;
+}
 .title {
-    padding: 2rem;
     font-size: 2rem;
     font-weight: 450;
     box-sizing: border-box;
     padding: 1.5rem 0.5rem;
+    margin-top: 0.5rem;
     width: 100%;
     height: 2.5rem;
     border-radius: 10px;

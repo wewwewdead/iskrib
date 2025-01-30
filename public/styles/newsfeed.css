@@ -137,6 +137,31 @@ body {
     height: 200px;
     border-radius: 2px;
 }
+.category{
+    font-size: 0.6rem;
+    color: #8c8c8c;
+}
+.homeMenu{
+    font-size: 1rem;
+}
+.categories-container{
+    display: flex;
+    gap: 1rem;
+}
+.categories-container a{
+    font-size: 0.8rem;
+    text-decoration: none;
+    color: #629584;
+}
+.categories-container a:hover{
+    color: #243642;
+    text-decoration: underline;
+}
+.title {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
 .post_image{
     width: 450px;
     height: 300px;

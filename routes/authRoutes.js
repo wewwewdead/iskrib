@@ -89,6 +89,7 @@ router.post('/publish',uploadPicture.single('image'), async(req, res, next) => {
             user: req.user,
             error: req.fileValidationError,  // pass error message to EJS template
         });
+        return;
     }
     try {
         await createPost(req, res);
