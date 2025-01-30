@@ -10,10 +10,12 @@ import './config/passportConfig.js'
 import path from "path";
 import forgotPasswordRoutes from "./routes/forgotPasswordRoutes.js";
 import methodOverride from 'method-override';
+import pgSession from 'connect-pg-simple';
 
 dotenv.config();
 const app = express();
 const port = 3000;
+const PGStore = pgSession(session);
 
 app.use(methodOverride('_method'));
 
@@ -25,10 +27,13 @@ app.set('views', 'views');
     
 app.use(session({
     secret: process.env.COOKIES_SECRET,
+    store: new PGStore({
+        conString: process.env.DATABASE_URL
+    }),
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {maxAge: 1000 * 60 * 60 * 10},
-    secure: process.env.NODE_ENV === 'false', // Ensure secure cookies in production, false if not in production
+    secure: process.env.NODE_ENV === 'production', // Ensure secure cookies in production, false if not in production
     httpOnly: true // Protect cookie from being accessed via JavaScript
 }));
 
