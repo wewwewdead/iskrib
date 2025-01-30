@@ -14,6 +14,8 @@ export const createPost = async (req, res) => {
         //insert new post into database
         const result = await db.query('INSERT INTO posts (user_id, content, title, image, category) VALUES($1, $2, $3, $4, $5) RETURNING *', [userId, content, title, imagePath, category]);
         res.redirect('/homepage');
+        return;
+
         
     } catch (error) {
         console.error(error);

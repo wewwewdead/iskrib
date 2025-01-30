@@ -1,7 +1,12 @@
 import pg from 'pg';
 import dotenv from "dotenv";
+import { createClient } from '@supabase/supabase-js';
 
 dotenv.config();
+
+// const supabase = createClient(
+//     process.env.SUPABASE_URL, 
+//     process.env.SUPABASE_KEY)
 
 const db = new pg.Client({
     user: process.env.PG_USER,
