@@ -183,6 +183,10 @@ body {
     width: 75%;
     height: 2.5rem;
 }
+.error {
+    font-size: 0.8rem;
+    color: red;
+}
 .footeriskrib {
     font-size: 2.7rem;
     margin-bottom: 2rem;

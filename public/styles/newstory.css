@@ -111,9 +111,20 @@ form {
 .box {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     width: 60%;
-    gap: 1.5rem;
+}
+.upload_photo {
+    cursor: pointer;
+    background-color: #629584;
+    color: white;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    padding: 0.3rem;
+    margin: 0.5rem 0rem 0.5rem 0rem;
+}
+.upload_photo:hover {
+    background-color: #243642;
 }
 .title {
     padding: 2rem;
@@ -159,7 +170,23 @@ form {
     background-color: #629584;
     color:  #FFFFFF;
 }
-
+.publishButton:hover{
+    background-color: #437363;
+}
+.errorMessage{
+    color: red;
+    font-size: 0.8rem;
+}
+#imagePreview{
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+#previewContainer{
+    display: none;
+}
 .contentcontainer {
     position: relative;
     display: flex;

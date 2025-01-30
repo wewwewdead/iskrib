@@ -46,23 +46,60 @@
 
         <div class="profile-container">
            <div class="profile-details">
-            <h2><%= userClicked.firstname %> <%= userClicked.lastname %></h2>
-            <p> <%= userClicked.email %></p>
-            <br>
-                <div class="selection">
-                    <a href="/user/<%= userClicked.id %>" class="profileSelection"><p>Home</p></a>
-                    <a href="/userBio/<%= userClicked.id %>"class="profileSelection" style="text-decoration: underline;"><p>Bio</p></a>
+            <div class="profile-name-follows">
+                <img id="profile-pic" src="<%= userClicked.profile_pictures || `./uploads/default-profile.png` %>" alt="">
+
+                <div class="follow-btn">
+                    <button class="follower-btn follows"><%= followerCount %> Followers</button>
+                    <button class="following-btn follows"><%= followingCount %> Following</button>
                 </div>         
-            <hr>
+            </div>
+            <h2><%= userClicked.firstname %> <%= userClicked.lastname %></h2>
             <br>
+            <div class="selection">
+                <a href="/user/<%= userClicked.id %>" class="profileSelection" style="text-decoration: underline;"><p>Home</p></a>
+                <a href="/userBio/<%= userClicked.id %>"class="profileSelection"><p>Bio</p></a>
+            </div>
+
             <h5>Bio</h5>
             <div class="bio">
                 <p><%= userClicked.bio || "no bio available" %></p>
+            </div>
+
+            <div id="follower-dialog" class="follower-dialog hidden">
+                <div class="follower-content">
+                    <% if(followerName.length > 0) {%> 
+                        <% followerName.forEach(name => {%>
+                            <a class="names" href="/user/<%= name.id %>">
+                                <%= name.firstname %> <%=name.lastname  %>
+                            </a>
+                            
+                        <% }); %>
+                    <% } else {%>
+                        <p>No followers yet</p>
+                        <% } %>
+                    
+                </div>
+                
+            </div>
+
+            <div class="following-dialog hidden" id="following-dialog">
+                <div class="following-content">
+                    <% if(followingName.length > 0) {%>
+                        <% followingName.forEach(name => { %>
+                            <a class="names" href="/user/<%= name.id %>">
+                                <%= name.firstname %> <%= name.lastname %>
+                            </a>
+                        <% }); %>
+                        <% } else {%>
+                            <p>No followings yet</p>
+                            <% } %>
+                </div>
             </div>
         </div>      
     </div>
 
 </body>
-<script src="/newsfeed.js"></script>
+<script src="/userProfile.js"></script>
 </html>
             

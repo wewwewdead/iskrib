@@ -51,9 +51,21 @@
 
         <div class="contentcontainer">
             <section>
-                <form id="createPost" action="/publish" method="post"> 
+                <form id="createPost" action="/publish" method="post" enctype="multipart/form-data"> 
                     <div class="box">
                         <input class="title" type="text" name="title" placeholder="Title" required>
+                        <label class="upload_photo" for="upload_photo">Upload photo</label>
+                        <div class="errorMessage">
+                            <% if(typeof error !== 'undefined') {%>
+                                <p><%= error %></p>
+                                <% } %>
+                            </div>
+                        <input type="file" id="upload_photo" name="image" accept="image/*">
+
+                        <div id="previewContainer" style="margin-top: 10px; display: none;">
+                            <img id="imagePreview" src="" alt="Image Preview">
+                        </div>
+
                         <textarea class="textarea" name="content" id="content" placeholder="Write your thoughts here..." required></textarea>
                     </div>
                 </form>

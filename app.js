@@ -52,4 +52,4 @@ app.use(forgotPasswordRoutes);
 
 app.listen(port, (req, res) => {
     console.log(`server running on port ${port}`);
-})  
+})

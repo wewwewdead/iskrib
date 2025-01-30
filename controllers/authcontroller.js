@@ -7,6 +7,7 @@ import { Result } from 'express-validator';
 
 
 
+
 //signup controller
 
 export const signup = async (req, res) => {
@@ -106,19 +107,47 @@ export const resetPassword = async (req, res) => {
     }
 }
 
-export const updateProfile = async (req, res) =>{
-    const {firstname, lastname, bio, gender} = req.body;
-    const userId = req.user ? req.user.id : null;
+import fs from 'fs';
+import path from 'path';
+
+// handle profile form submission (update the user's profile in the database)
+export const updateProfile = async (req, res) => {
+    const { firstname, lastname, bio, gender } = req.body;
+    // console.log(req.file);
+          
+    let filePath = null;
 
     try {
-        //update user data in database
-        const result = await db.query("UPDATE users SET firstname = $1, lastname = $2, bio = $3, gender = $4 WHERE id = $5", [firstname, lastname, bio, gender, userId]);
+        // check if the user has a current profile picture
+        const user = await db.query('SELECT profile_pictures FROM users WHERE id = $1', [req.user.id]);
+        const oldFilePath = user.rows[0].profile_pictures;
 
-        // Redirect or respond with success
-        res.redirect('/myProfile');
+        // ff there is a new file uploaded, handle the file update
+        if (req.file) {
+            filePath = `/uploads/${req.file.filename}`;  // path of the new profile picture
+            
+            // delete the old file if it exists
+            if (oldFilePath) {
+                const oldFile = path.join(process.cwd(), 'public', oldFilePath); // get the absolute path to the old file
+                if (fs.existsSync(oldFile)) {
+                    fs.unlinkSync(oldFile); // delete the old file
+                }
+            }
+        }
+
+        // update user's profile details in the database
+        await db.query(
+            'UPDATE users SET firstname = $1, lastname = $2, gender = $3, bio = $4, profile_pictures = $5 WHERE id = $6',
+            [firstname, lastname, gender, bio, filePath, req.user.id]
+        );
+        
+        res.redirect('/myProfile');  // redirect to the profile page after successful update
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error updating profile');
+        if (error instanceof multer.MulterError) {
+            res.status(400).send({ error: error.message });
+        } else {
+            res.status(400).send({ error: error.message });
+        }
     }
-
 }

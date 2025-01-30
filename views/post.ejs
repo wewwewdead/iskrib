@@ -66,19 +66,23 @@
            <div class="left">
            </div>
 
-           <div class="newsfeedContainer">
+           <div class="post-container">
             <section class="content">
+                <img id="newsfeed-profile" src="<%= post.profile_pictures %>" alt="photo">
                 <h1><%= post.title %></h1>
-                <p><%= post.content %></p>
+                <% if(post.image) {%>
+                    <img class="post_image" src="<%= post.image %>" alt="photo">
+                    <% } %>
+                <p class="post-content"><%= post.content %></p>
                 <br>
                 <small><%= post.firstname%> <%= post.lastname %></small>
                 <small><%= new Date(post.created_at).toLocaleString()  %></small>           
             </section>
            </div>
-           <div><a class="add-comment-btn" href="/homepage">Back</a></div>
+           <div><a class="add-comment-btn" href="#" onclick="event.preventDefault(); history.back();">Back</a></div>
         
     </div>
 
 </body>
-<script src="/newsfeed.js"></script>
+<script src="/post.js"></script>
 </html>
