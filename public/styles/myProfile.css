@@ -168,6 +168,7 @@ hr{
     justify-content: space-between;
     padding-top: 1rem;
     border-bottom: 1px solid  #ccc;
+    margin-bottom: 1rem;
 }
 .newsfeed_image{
     float: left;
@@ -184,6 +185,15 @@ hr{
 .post-title a{
     color: #629584;
     text-decoration: none;
+}
+.category-container{
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+}
+.category{
+    font-size: 0.6rem;
+    color: #8c8c8c;
 }
 .post-title a:hover{
     color: #243642;  

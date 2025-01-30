@@ -5,13 +5,14 @@ import router from '../routes/authRoutes.js';
 
 export const createPost = async (req, res) => {
     // console.log(req.file);
-    const {content, title} = req.body;
+    const {content, title, category} = req.body;
     const userId = req.user ? req.user.id : null;
     const imagePath = req.file ? `/uploads/newsfeed/${req.file.filename}` : null;
+    // console.log(req.body);
 
     try {
         //insert new post into database
-        const result = await db.query('INSERT INTO posts (user_id, content, title, image) VALUES($1, $2, $3, $4) RETURNING *', [userId, content, title, imagePath]);
+        const result = await db.query('INSERT INTO posts (user_id, content, title, image, category) VALUES($1, $2, $3, $4, $5) RETURNING *', [userId, content, title, imagePath, category]);
         res.redirect('/homepage');
         
     } catch (error) {

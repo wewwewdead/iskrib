@@ -62,6 +62,16 @@
                     </div>
                     
                     <hr>
+                    <div class="categories-container">
+                        <% 
+                            let baseFilter = filter === 'followed' ? 'followed' : ''; 
+                        %>
+                        <a href="/homepage?filter=<%= baseFilter ? `${baseFilter}&filter=` : '' %>allposts"><span class="<%= category.allposts ? 'active' : ''%>">All posts</span></a> <!--if baseFilter is true then it will render the value of baseFilter else renfder "" -->
+                        <a href="/homepage?filter=<%= baseFilter ? `${baseFilter}&filter=` : '' %>poem"><span class="<%= category.poem ? 'active' : '' %>">Poems</span></a>
+                        <a href="/homepage?filter=<%= baseFilter ? `${baseFilter}&filter=` : '' %>story"><span class="<%= category.story ? 'active' : '' %>"> Stories</span></a>
+                        <a href="/homepage?filter=<%= baseFilter ? `${baseFilter}&filter=` : '' %>essay"><span class="<%= category.essay ? 'active' : '' %>">Essays</span></a>
+                        
+                    </div>
                     <% if(locals.posts.length > 0) { %>
                         <% posts.forEach(post => { %>
                             <div class="newsfeed post_card">
@@ -95,8 +105,12 @@
                                             <% } %>
                                     
                                 </div>
-  
-                                <a class="postTitle" href="/post/<%= post.post_id%>"><span><%= post.title %></span></a>
+
+                                <div class="title">
+                                    <a class="postTitle" href="/post/<%= post.post_id%>"><span><%= post.title %></span></a>
+                                    <p class="category"><%= post.category ? `▸ ${post.category}` : ''%></p>
+                                </div>
+
                                 <% if(post.image) {%>
                                     <span>
                                         <a href="/post/<%= post.post_id%>">
@@ -236,22 +250,32 @@
                     <% } %>
 
                     <div class="pagination">
-                        <% if(filter === 'followed') {%>
-                            <% if(currentPage > 1) { %>
-                                <a href="/homepage?page=<%= currentPage - 1 %>&filter=followed"> &laquo; Previous</a>
+                    <% 
+                        let baseParams = ``;
+                        if (filter === 'followed') {
+                            baseParams += `&filter=followed`;
+                        }
+                        if (category.poem) {
+                            baseParams += `&filter=poem`;
+                        }
+                        if (category.story) {
+                            baseParams += `&filter=story`;
+                        }
+                        if (category.essay) {
+                            baseParams += `&filter=essay`;
+                        }
+                        if (category.allposts) {
+                            baseParams += `&filter=allposts`;
+                        }
+                        %>
+                         <% if (currentPage > 1) { %>
+                            <a href="/homepage<%=`?page=${currentPage - 1}` %><%= baseParams %>"> &laquo; Previous</a>
                             <% } %>
+
                             <span> Page <%= currentPage %> of <%= totalPages %> </span>
-                            <% if(currentPage < totalPages) { %>
-                                <a href="/homepage?page=<%= currentPage + 1 %>&filter=followed"> Next &raquo;</a>
-                            <% } %>
-                        <% } else {%>
-                            <% if(currentPage > 1) { %>
-                                <a href="/homepage?page=<%= currentPage - 1 %>&filter=public"> &laquo; Previous</a>
-                            <% } %>
-                            <span> Page <%= currentPage %> of <%= totalPages %> </span>
-                            <% if(currentPage < totalPages) { %>
-                                <a href="/homepage?page=<%= currentPage + 1 %>&filter=public"> Next &raquo;</a>
-                            <% } %>
+
+                        <% if (currentPage < totalPages) { %>
+                            <a href="/homepage<%=`?page=${currentPage + 1}` %><%= baseParams %>"> Next &raquo;</a>
                         <% } %>
                         
                     </div>

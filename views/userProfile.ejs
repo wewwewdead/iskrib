@@ -78,7 +78,10 @@
             <div class="profile_post" id="profile_post" data-id="<%= post.id %>">
                 <div class="separator">
                     <div class="post-title">
-                        <h2><a href="/post/<%= post.id%>"><%= post.title %></a></h2>
+                        <div class="category-container">
+                            <h2><a href="/post/<%= post.id%>"><%= post.title %></a> </h2>
+                            <p class="category"><%= post.category ? `▸ ${post.category}` : ''%></p>
+                        </div>
                     </div>
 
                     <div class="post-card">
