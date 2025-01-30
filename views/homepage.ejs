@@ -56,55 +56,67 @@
             <div class="newsfeedContainer">
                 <section>
                     <h3>Latest posts</h3>
+                    <div class="home_menu">
+                        <a href="/homepage"><span class="<%= filter === 'public' ? 'active' : ''%>">Public</span></a>
+                        <a href="/homepage?filter=followed"><span class="<%= filter === 'followed' ? 'active' : '' %>">Following</span></a>
+                    </div>
+                    
                     <hr>
                     <% if(locals.posts.length > 0) { %>
                         <% posts.forEach(post => { %>
                             <div class="newsfeed post_card">
 
-                                <a href="/user/<%= post.user_id %>" class="profile_link author">
-                                    <span><small ><%= post.firstname %> <%= post.lastname %></small></span>
-                                </a>
-                                <a class="postTitle" href="/post/<%= post.post_id%>"><span><%= post.title %></span></a>
+                                <div class="name-section">
+                                    <% if(post.user_id == user.id) {%>
 
-                                <p class="content" id="content-id<% post.post_id %>">
+                                                <a class="author" href="/myProfile">
+                                                    <img id="newsfeed-profile" src="<%=post.user_profile_picture || `./uploads/default-profile.png`%>">
+                                                </a>
+
+                                            <a class="profile_link author" href="/myProfile">
+                                                <small><%= post.firstname %> <%= post.lastname %></small>
+                                            </a>
+
+                                        <% } else {%>
+
+                                                <a class="author" href="/user/<%= post.user_id %>">
+                                                    <img id="newsfeed-profile" src="<%=post.user_profile_picture || `./uploads/default-profile.png`%>">
+                                                </a>
+
+                                            <span>  
+                                                <a href="/user/<%= post.user_id %>" class="profile_link author">
+                                                    <small ><%= post.firstname %> <%= post.lastname %></small>
+                                                </a>
+                                            </span>
+                                            <span class="separator">•</span>
+                                                    <a href="#" data-user-id="<%= post.user_id %>" class="follow-btn">
+                                                        <%= post.following ? 'Unfollow' : 'Follow' %>  <!-- check if the logged user follows the post.user_id-->
+                                                    </a>
+                                            <% } %>
+                                    
+                                </div>
+  
+                                <a class="postTitle" href="/post/<%= post.post_id%>"><span><%= post.title %></span></a>
+                                <% if(post.image) {%>
+                                    <span>
+                                        <a href="/post/<%= post.post_id%>">
+                                            <img class="newsfeed_image" src="<%=post.image%>" alt="photo">
+                                        </a>
+                                    </span>
+                                    <% } %>
+                                <p class="content" id="content-id<%= post.post_id %>">
                                     <%- post.content.length > 200 ? `${post.content.substring(0, 200)}...` : post.content %>
                                 </p>
 
                                 <% if(post.content.length > 200) { %>
-                                    <a href="#" class="read-more read_more_toggle" data-id="<%= post.post_id %>">Read more</a>
+                                    <span data-id="<%= post.post_id %>"><a class="read-more read_more_toggle" data-id="<%= post.post_id %>" href="#" >Read more</a></span>
                                 <% } %>
 
                                 <small class="publishDate"><%= new Date(post.created_at).toLocaleString() %></small>
 
-                                <!-- Comments Section -->
+                                <!-- comments Section -->
                                 <div class="comments-section">
-                                    <div class="hide_comments">
-                                        <button class="toggle-comments toggle-comments<%=post.post_id%>" data-id="<%= post.post_id %>" data-open="false">Show Comments</button>
-
-                                        
-
-                                        <div class="like">
-                                            <div class="icons-box">
-                                                <svg class="svg-comments" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#629584" viewBox="0 0 16 16">
-                                                    <path fill="#629584" d="M12.344 11.458A5.28 5.28 0 0 0 14 7.526C14 4.483 11.391 2 8.051 2S2 4.483 2 7.527c0 3.051 2.712 5.526 6.059 5.526a6.6 6.6 0 0 0 1.758-.236q.255.223.554.414c.784.51 1.626.768 2.512.768a.37.37 0 0 0 .355-.214.37.37 0 0 0-.03-.384 4.7 4.7 0 0 1-.857-1.958v.014z">
-                                                    </path>
-                                                </svg>
-                                                <span class="comment_count"> <%= post.comment_count %></span>
-                                            </div>
-
-                                            <div class="icons-box">
-                                                <button class="like-button">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" >
-                                                    <path data-post-id="<%= post.post_id %>" class="like-btn <%= post.liked ? 'liked' : 'unlike' %>" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                                                    </svg>
-        
-                                                </button>
-                                                  <span class="likeCount like-id-<%= post.post_id %>"><%= post.like_count %></span>
-                                            </div>
-                                            
-                                        </div>
-                                    </div>
-
+                                    
                                     <div class="comments-container hidden" id="comments-<%= post.post_id %>">
                                         <% if (post.comments && post.comments.length > 0) { %>
                                             <% post.comments.forEach(comment => { %>
@@ -112,7 +124,11 @@
 
                                                     <p>
                                                         <% if(comment.user_id) {%>
-                                                            <a href="/user/<%= comment.user_id %>" class="profile_link author"><small><span><%= comment.user.firstname %> <%= comment.user.lastname %>:</span></small></a>
+                                                            <div class="name-section">
+                                                                <img id="newsfeed-profile-comment" src="<%=comment.user.profile_pictures || `./uploads/default-profile.png`%>">
+                                                                <a href="/user/<%= comment.user_id %>" class="profile_link author"><small><span><%= comment.user.firstname %> <%= comment.user.lastname %>:</span></small></a>
+                                                            </div>
+                                                            
                                                             <p class="publishDate">
                                                                 <small><%= new Date(comment.created_at).toLocaleString() %></small>
 
@@ -129,12 +145,15 @@
                                                          <!-- reply button -->
                                                           <div class="hide_comments">
                                                             <button id="button-<%= comment.id %>" class="reply-btn" data-comment-id="<%= comment.id %>" data-user="<%= user.firstname %> <%= user.lastname %>">show replies</button>
-                                                            <svg class="svg-comments" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#629584" viewBox="0 0 16 16">
-                                                                <path fill="#629584" d="M12.344 11.458A5.28 5.28 0 0 0 14 7.526C14 4.483 11.391 2 8.051 2S2 4.483 2 7.527c0 3.051 2.712 5.526 6.059 5.526a6.6 6.6 0 0 0 1.758-.236q.255.223.554.414c.784.51 1.626.768 2.512.768a.37.37 0 0 0 .355-.214.37.37 0 0 0-.03-.384 4.7 4.7 0 0 1-.857-1.958v.014z">
-                                                                </path>
-                                                            </svg>
+                                                            <div class="icons-box">
+                                                                <svg class="svg-comments" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#629584" viewBox="0 0 16 16">
+                                                                    <path fill="#629584" d="M12.344 11.458A5.28 5.28 0 0 0 14 7.526C14 4.483 11.391 2 8.051 2S2 4.483 2 7.527c0 3.051 2.712 5.526 6.059 5.526a6.6 6.6 0 0 0 1.758-.236q.255.223.554.414c.784.51 1.626.768 2.512.768a.37.37 0 0 0 .355-.214.37.37 0 0 0-.03-.384 4.7 4.7 0 0 1-.857-1.958v.014z">
+                                                                    </path>
+                                                                </svg>
+                                                                
+                                                                <span class="comment_count"> <%= comment.reply_count %></span>
+                                                            </div>
                                                             
-                                                            <span class="comment_count"> <%= comment.reply_count %></span>
                                                           </div>
                                                            
                                                            
@@ -153,14 +172,57 @@
                                                 </div>
                                             <% }) %>
                                         <% } else { %>
-                                            <p>No comments yet.</p>
+                                            <p class="no-comments">No comments yet.</p>
                                         <% } %>
                                     </div>
 
-                                    <!-- Add Comment -->
+                                    <!-- add comment -->
                                     <div class="add-comment">
                                         <input type="text" class="comment-input" id="comment-input-<%= post.post_id %>" placeholder="Write a comment...">
                                         <button class="add-comment-btn" data-id="<%= post.post_id %>">Leave a Comment</button>
+                                    </div>
+                                    <div class="hide_comments">
+                                        <div class="icons-box">
+                                            <button class="toggle-comments toggle-comments<%=post.post_id%>" data-id="<%= post.post_id %>" data-open="false"><div class="icons-box">
+                                                <svg class="svg-comments svg"  xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="#629584" viewBox="0 0 16 16">
+                                                    <path class="icon-comments" data-id="<%= post.post_id %>" fill="#629584" d="M12.344 11.458A5.28 5.28 0 0 0 14 7.526C14 4.483 11.391 2 8.051 2S2 4.483 2 7.527c0 3.051 2.712 5.526 6.059 5.526a6.6 6.6 0 0 0 1.758-.236q.255.223.554.414c.784.51 1.626.768 2.512.768a.37.37 0 0 0 .355-.214.37.37 0 0 0-.03-.384 4.7 4.7 0 0 1-.857-1.958v.014z">
+                                                    </path>
+                                                </svg>
+                                                <span class="comment_count"> <%= post.comment_count %></span>
+                                            </div></button>
+                                        </div>
+
+                                        <div class="icons-box">
+                                            
+                                            <button class="like-button">
+                                                <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 16 16" >
+                                                <path data-post-id="<%= post.post_id %>"
+                                                    class="like-btn <%= post.liked ? 'liked' : 'unlike' %>" 
+                                                    d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                                                </svg>
+                                                <!-- if post is already liked by the logged user then it will render the liked ccs selector which is the filled color is red -->
+    
+                                            </button>
+                                            <% if(post.liked) { %>
+                                                <span id="<%= post.post_id %>" class="likeCount like-id-<%= post.post_id %>" data-like="<%= post.post_id %>"><%= post.like_count == 1 ? 'You' : `You + ${(post.like_count - 1)} likes`%></span>
+                                            <% } else {%>
+                                                <span id="<%= post.post_id %>" class="likeCount like-id-<%= post.post_id %>" data-like="<%= post.post_id %>"><%= `${post.like_count} likes`%></span>
+                                            <% } %>
+
+                                            <div class="likers-dialog hidden likers-id-<%= post.post_id %>" id="likers-dialog-<%= post.post_id%>" >
+                                                <div class="likers-content" id="like-<%= post.post_id %>">
+                                                    <% if(post.likers && post.likers.length > 0) {%>
+                                                        <% post.likers.forEach(likers => { %>
+                                                            <a class="likers-name" href="/user/<%= likers.id %>"><%= likers.firstname %> <%= likers.lastname %></a>
+
+                                                       <% }); %>
+                                                        <% } else {%>
+                                                            <p>No likers yet</p>
+                                                            <% } %>
+                                                </div>
+                                            </div>
+                                              
+                                        </div>
                                     </div>
 
                                     
@@ -169,18 +231,29 @@
                         <% }); %>
                     <% } else { %>
                         <div class="post_card">
-                            <p>No posts available. Be the first to create one!</p>
+                            <p>No posts available.</p>
                         </div>
                     <% } %>
 
                     <div class="pagination">
-                        <% if(currentPage > 1) { %>
-                            <a href="/homepage?page=<%= currentPage - 1 %>"> &laquo; Previous</a>
+                        <% if(filter === 'followed') {%>
+                            <% if(currentPage > 1) { %>
+                                <a href="/homepage?page=<%= currentPage - 1 %>&filter=followed"> &laquo; Previous</a>
+                            <% } %>
+                            <span> Page <%= currentPage %> of <%= totalPages %> </span>
+                            <% if(currentPage < totalPages) { %>
+                                <a href="/homepage?page=<%= currentPage + 1 %>&filter=followed"> Next &raquo;</a>
+                            <% } %>
+                        <% } else {%>
+                            <% if(currentPage > 1) { %>
+                                <a href="/homepage?page=<%= currentPage - 1 %>&filter=public"> &laquo; Previous</a>
+                            <% } %>
+                            <span> Page <%= currentPage %> of <%= totalPages %> </span>
+                            <% if(currentPage < totalPages) { %>
+                                <a href="/homepage?page=<%= currentPage + 1 %>&filter=public"> Next &raquo;</a>
+                            <% } %>
                         <% } %>
-                        <span> Page <%= currentPage %> of <%= totalPages %> </span>
-                        <% if(currentPage < totalPages) { %>
-                            <a href="/homepage?page=<%= currentPage + 1 %>"> Next &raquo;</a>
-                        <% } %>
+                        
                     </div>
                 </section>
             </div>

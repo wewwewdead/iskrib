@@ -46,8 +46,15 @@
 
         <div class="profile-container">
            <div class="profile-details">
+            <div class="profile-name-follows">
+                <img id="profile-pic" src="<%= user.profile_pictures || `./uploads/default-profile.png` %>" alt="">
+
+                <div class="follow-btn">
+                    <button class="follower-btn follows"><%= followerCount %> Followers</button>
+                    <button class="following-btn follows"><%= followingCount %> Following</button>
+                </div>         
+            </div>
             <h2><%= locals.user.firstname %> <%= locals.user.lastname %></h2>
-            <p> <%= locals.user.email %></p>
             <br>
             <div class="selection">
                 <a href="/myProfile" class="profileSelection" style="text-decoration: underline;"><p>Home</p></a>
@@ -58,10 +65,10 @@
             <h5>Posts</h5>
             <% if(posts.length > 0) {%>
                 <% posts.forEach(post => {%>
-            <div class="profile_post" id="profile_post" data-id="<%= post.id %>">  
-
+            <div class="profile_post" id="profile_post" data-id="<%= post.id %>">
+                <div class="separator">
                     <div class="post-title">
-                        <h2><%= post.title %></h2>
+                        <h2><a href="/post/<%= post.id%>"><%= post.title %></a></h2>
                         <div class="post-settings"><p class="settings">⋯</p>
                             
                             <div class="hide">
@@ -75,13 +82,23 @@
                         </div>
                     </div>
 
-                    <p class="post-content"><%= post.content.length > 200 ? post.content.substring(0, 200) : post.content %>
+                    <div class="post-card">
+                        <% if(post.image) {%>
+                            <span>
+                                <a href="/post/<%= post.id%>">
+                                    <img class="newsfeed_image" src="<%=post.image%>" alt="photo">
+                                </a>
+                            </span>
+                            <% } %>
+                        <p id="post-id-<%= post.id %>" class="post-content"><%= post.content.length > 200 ? `${post.content.substring(0, 200)}...`: post.content %></p>
                         <% if (post.content.length > 200) {%>
-                            <a href="#" class="read-more" data-id="<%= post.id %>">... Read more</a>
-                        <% } %></p>
-
-                    <p><small><%= new Date(post.created_at).toLocaleString() %></small></p>
+                            <a href="#" class="read-more read" data-id="<%= post.id %>">Read more</a>
+                            <% } %>
+                        <p ><small class="publishDate"><%= new Date(post.created_at).toLocaleString() %></small></p>
+                    </div>
+                </div>   
             </div>
+            
             <%}); %>
                 <% } else {%>
                     <p>No post yet</p>
@@ -109,7 +126,7 @@
                 </div>
             </div>
 
-            <!-- Dialog Form -->
+            <!-- dialog Form -->
              <div id="editDialog" class="dialog hidden">
                 <div class="dialog-content">
                     <h3>Edit Post</h3>
@@ -129,6 +146,37 @@
                 </div>
             </div>
 
+            <div id="follower-dialog" class="follower-dialog hidden">
+                <div class="follower-content">
+                    <% if(followerName.length > 0) {%> 
+                        <% followerName.forEach(name => {%>
+                            <a class="names" href="/user/<%= name.id %>">
+                                <%= name.firstname %> <%=name.lastname  %>
+                            </a>
+                            
+                        <% }); %>
+                    <% } else {%>
+                        <p>No followers yet</p>
+                        <% } %>
+                    
+                </div>
+                
+            </div>
+
+            <div class="following-dialog hidden" id="following-dialog">
+                <div class="following-content">
+                    <% if(followingName.length > 0) {%>
+                        <% followingName.forEach(name => { %>
+                            <a class="names" href="/user/<%= name.id %>">
+                                <%= name.firstname %> <%= name.lastname %>
+                            </a>
+                        <% }); %>
+                        <% } else {%>
+                            <p>No followings yet</p>
+                            <% } %>
+                </div>
+            </div>
+
         </div>
 
         <div class="edit-profile">
@@ -142,136 +190,9 @@
 </body>
 <script>
     
-    document.addEventListener('DOMContentLoaded', () => {
-        const deleteDialog = document.getElementById('deleteDialog');
-        const confirmDelete = document.getElementById('confirmDelete');
-        const cancelDelete = document.getElementById('cancelDelete');
-        const deletePostButton = document.querySelectorAll('.delete-post');
-        let postIdToDelete = null; // Declare the variable to store the post ID to delete
-
-        // Open delete confirmation dialog
-        deletePostButton.forEach(button => {
-            console.log("Delete button found:", button); 
-            button.addEventListener('click', (e) => {
-                e.preventDefault(); // Prevent default link action
-                postIdToDelete = button.getAttribute('data-id'); // Get the post ID from data-id attribute
-
-                // Show the delete confirmation dialog
-                deleteDialog.classList.remove('hidden');
-            });
-        });
-        // Confirm delete action
-        confirmDelete.addEventListener('click', async () => {
-            try {
-                // Send DELETE request to server
-                const response = await fetch(`/delete/posts/${postIdToDelete}`, {
-                    method: 'DELETE',
-                });
-                
-                if (response.ok) {
-                    // Successfully deleted post
-                    const postElement = document.querySelector(`.profile_post[data-id="${postIdToDelete}"]`);
-                    
-                    if (postElement) {
-        
-                        postElement.remove(); // Remove post from DOM
-                        } else {
-                            console.log('Post element not found in DOM'); // Debug: Post element
-                            }
-                            
-                    // Hide the dialog
-                    deleteDialog.classList.add('hidden');
-                } else {
-                    console.error('Failed to delete the post');
-                    alert('An error occurred while deleting the post.');
-                }
-            } catch (error) {
-                console.error('Error deleting the post:', error);
-                alert('An error occurred while deleting the post.');
-            }
-        });
-        
-        // Close delete confirmation dialog on cancel
-        cancelDelete.addEventListener('click', () => {
-        deleteDialog.classList.add('hidden'); // Hide the dialog
-        });
-        
-        // Close dialog when clicking outside the dialog content
-        deleteDialog.addEventListener('click', (e) => {
-            if (e.target === deleteDialog) {
-                deleteDialog.classList.add('hidden');
-            }
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const profilePost = document.querySelectorAll('.profile_post');
-
-        profilePost.forEach(post => {
-            
-            post.addEventListener('click', async(e)=> {
-                if(e.target.classList.contains('read-more')) {
-                    e.preventDefault();
-                    const postId = e.target.getAttribute('data-id');
-                    const postElements = e.target.parentElement;
-                    
-
-                    try {
-                        //feth the post from database
-                        const response = await fetch(`/api/posts/${postId}`);
-                        if(response.ok) {
-                            const post = await response.json();
-                            // Update the content and remove the "Read More" link
-                            postElements.innerHTML = post.content;    
-                            postElements.style.whiteSpace = 'pre-wrap';         
-                            e.target.remove();
-                        }
-                    } catch (error) {
-                        console.error('Error fetching post content:', error);
-                    }
-                }}) 
-            });
-        })
     
 
-    document.addEventListener('DOMContentLoaded', () => {
-    const editDialog = document.getElementById('editDialog');
-    const editPostForm = document.getElementById('editPostForm');
-    const editTitle = document.getElementById('editTitle');
-    const editContent = document.getElementById('editContent');
-    const cancelEdit = document.getElementById('cancelEdit');
-
-    // Open dialog and populate fields
-    document.querySelectorAll('.edit-post').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent default link action
-
-            const postId = button.dataset.id;
-            const postTitle = button.dataset.title;
-            const postContent = button.dataset.content;
-
-            editTitle.value = postTitle;
-            editContent.value = postContent;
-            editPostForm.action = `/posts/${postId}`; // Set the form action dynamically
-
-            editDialog.classList.remove('hidden'); // Show the dialog
-        });
-    });
-
-    // Close dialog on cancel
-    cancelEdit.addEventListener('click', () => {
-        editDialog.classList.add('hidden'); // Hide the dialog
-    });
-
-    // Close dialog when clicking outside the dialog content
-    editDialog.addEventListener('click', (e) => {
-        if (e.target === editDialog) {
-            editDialog.classList.add('hidden');
-        }
-    });
-});
-
 </script>
-<script src="/newsfeed.js"></script>
+<script src="/profile.js"></script>
 </html>
             

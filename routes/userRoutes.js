@@ -1,7 +1,6 @@
 // routes/userRoutes.js
 import express from 'express';
 import { checkProfileCompletion } from '../middleware/profilecompletion.js';
-import { updateProfile } from '../controllers/userController.js';
 import { createPost } from '../controllers/createPost.js';
 import { getNewsfeed } from '../controllers/userController.js';
 

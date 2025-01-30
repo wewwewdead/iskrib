@@ -46,8 +46,25 @@
 
         <div class="profile-container">
            <div class="profile-details">
-            <h2><%= userClicked.firstname %> <%= userClicked.lastname %></h2>
-            <p> <%= userClicked.email %></p>
+
+            <div class="profile-name-follows">
+                <img id="profile-pic" src="<%= userClicked.profile_pictures || `./uploads/default-profile.png` %>" alt="">
+
+                <div class="follow-btn">
+                    <button class="follower-btn follows"><%= followerCount %> Followers</button>
+                    <button class="following-btn follows"><%= followingCount %> Following</button>
+                </div>         
+            </div>
+            <div class="user-name">
+                <h2><%= userClicked.firstname %> <%= userClicked.lastname %></h2>
+                <div class="follow" data-user-id="<%= userClicked.id %>">
+                    <a href="#" data-user-id="<%= userClicked.id %>" id="follow-btn-<%=userClicked.id %>" class="follow-btn">
+                        <%= isFollowing ? 'Unfollow' : 'Follow' %>  <!-- check if the logged user follows the post.user_id-->
+                    </a>
+                </div>
+ 
+            </div>
+            
             <br>
             <div class="selection">
                 <a href="/user/<%= userClicked.id %>" class="profileSelection" style="text-decoration: underline;"><p>Home</p></a>
@@ -56,25 +73,34 @@
             <hr>
             <br>
             <h3>Posts</h3>
+            <% if(posts.length > 0) {%>
+                <% posts.forEach(post => {%>
+            <div class="profile_post" id="profile_post" data-id="<%= post.id %>">
+                <div class="separator">
+                    <div class="post-title">
+                        <h2><a href="/post/<%= post.id%>"><%= post.title %></a></h2>
+                    </div>
 
-        <% if(posts.length > 0) {%>
-            <% posts.forEach(post => {%>
-                <div class="profile_post">
-                
-                    <a class="profile_link" href="/myProfile">
-                        <p><%= userClicked.firstname%> <%=userClicked.lastname %></p>
-                    </a>
-                    <h2><%= post.title %></h2>
-                    <p class="post-content"><%= post.content.length > 200 ? post.content.substring(0, 200) : post.content %>
-                    <% if (post.content.length > 200) {%>
-                        <a href="#" class="read-more" data-id="<%= post.id %>">... Read more</a>
-                    <% } %></p>
-                    <p><small><%= new Date(post.created_at).toLocaleString() %></small></p>
+                    <div class="post-card">
+                            <% if(post.image) {%>
+                                <span>
+                                    <a href="/post/<%= post.id%>">
+                                        <img class="newsfeed_image" src="<%=post.image%>" alt="photo">
+                                    </a>
+                                </span>
+                                <% } %>
+                        <p id="post-id-<%= post.id %>" class="post-content"><%= post.content.length > 200 ? `${post.content.substring(0, 200)}...`: post.content %></p>
+                        <% if (post.content.length > 200) {%>
+                            <a href="#" class="read-more read" data-id="<%= post.id %>">Read more</a>
+                            <% } %>
+                        <p ><small class="publishDate"><%= new Date(post.created_at).toLocaleString() %></small></p>
+                    </div>
                 </div>
+                      
+            </div>
+            
             <%}); %>
         
-            
-
             <div class="pagination">
                 <% if(currentPage > 1) {%>
                     <a href="/user/<%= userClicked.id%>?page=<%= currentPage - 1 %>">&laquo; Previous</a>
@@ -86,6 +112,37 @@
                     <a href="/user/<%= userClicked.id%>?page=<%= currentPage + 1 %>">Next &raquo;</a>
                     <% } %>
             </div>
+            <div id="follower-dialog" class="follower-dialog hidden">
+                <div class="follower-content">
+                    <% if(followerName.length > 0) {%> 
+                        <% followerName.forEach(name => {%>
+                            <a class="names" href="/user/<%= name.id %>">
+                                <%= name.firstname %> <%=name.lastname  %>
+                            </a>
+                            
+                        <% }); %>
+                    <% } else {%>
+                        <p>No followers yet</p>
+                        <% } %>
+                    
+                </div>
+                
+            </div>
+
+            <div class="following-dialog hidden" id="following-dialog">
+                <div class="following-content">
+                    <% if(followingName.length > 0) {%>
+                    <% followingName.forEach(name => { %>
+                        <a class="names" href="/user/<%= name.id %>">
+                            <%= name.firstname %> <%= name.lastname %>
+                        </a>
+                    <% }); %>
+                    <% } else {%>
+                        <p>No followings yet</p>
+                        <% } %>
+                </div>
+                
+            </div>
         </div>
         <% } else {%>
             <p>No post yet</p>
@@ -96,16 +153,18 @@
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('click', (e) => {
+            
+        })
         const posts = document.querySelectorAll('.profile_post');
 
         posts.forEach(post => {
             post.addEventListener('click', async(e)=> {
                 
-                console.log(e.target);
                 if(e.target.classList.contains('read-more')) {
                     e.preventDefault();
                     const postId = e.target.getAttribute('data-id');
-                    const postElements = e.target.parentElement;
+                    const postElements = document.getElementById(`post-id-${postId}`);
 
                     try {
                         //fetch the post from database
@@ -115,16 +174,31 @@
                             // Update the content and remove the "Read More" link
                             postElements.innerHTML = post.content;
                             postElements.style.whiteSpace = 'pre-wrap';
-                            e.target.remove();
+                            e.target.textContent = 'Read less';
+                            e.target.classList.remove('read-more')
+                            e.target.classList.add('read-less')
                         }
                     } catch (error) {
                         console.error('Error fetching post content:', error);
                     }
-                }     
+                } else if(e.target.classList.contains('read-less')){
+                    e.preventDefault();
+                    const postId = e.target.getAttribute('data-id')
+                    const postElements = document.getElementById(`post-id-${postId}`);
+                    const fullContext = postElements.textContent;
+                    const shortenedText = `${fullContext.substring(0, 200)}...`;
+                    postElements.textContent = shortenedText;
+                    postElements.style.whiteSpace = 'normal';
+
+                    // change button back to "Read More"
+                    e.target.textContent = "Read More";
+                    e.target.classList.remove('read-less');
+                    e.target.classList.add('read-more');
+                }    
             })
         });
     })
 </script>
-<script src="/newsfeed.js"></script>
+<script src="/userProfile.js"></script>
 </html>
             
